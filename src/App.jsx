@@ -1,4 +1,5 @@
 import FundCard from "./FundCard";
+import CompareFunds from "./CompareFunds";
 import { useState } from "react";
 
 function App() {
@@ -78,19 +79,24 @@ const selectStyle = {
   marginBottom: "10px"
 };
 
-function getRiskColor(risk) {
+const categories = [
+  "All",
+  "Equity",
+  "Small Cap",
+  "Flexi Cap"
+];
 
-  if (risk === "High") {
-    return "red";
+const sortOptions = [
+  {
+    label: "Highest Returns",
+    value: "high"
+  },
+  {
+    label: "Lowest Returns",
+    value: "low"
   }
+];
 
-  if (risk === "Medium") {
-    return "yellow";
-  }
-
-  return "green";
-
-}
 
   return (
 
@@ -135,7 +141,9 @@ function getRiskColor(risk) {
   {
     funds.map((fund) => (
 
-      <option value={fund.name}>
+      <option
+      key={fund.name}
+      value={fund.name}>
         {fund.name}
       </option>
 
@@ -157,7 +165,9 @@ function getRiskColor(risk) {
   {
     funds.map((fund) => (
 
-      <option value={fund.name}>
+      <option
+      key={fund.name}
+      value={fund.name}>
         {fund.name}
       </option>
 
@@ -168,143 +178,55 @@ function getRiskColor(risk) {
 
 <br />
 <br />
-      <button
+{
+  categories.map((category) => (
+
+    <button
+    key={category}
       style={{
-  ...buttonStyle,
+        ...buttonStyle,
 
-  backgroundColor:
-    selectedCategory === "All"
-      ? "#000000ff"
-      : "#464646ff",
+        backgroundColor:
+          selectedCategory === category
+            ? "#000000ff"
+            : "#464646ff",
+        color: "white"
+      }}
 
-  color: "white"
-}}
-      onClick={() => setSelectedCategory("All")}>
-        All
-      </button>
+      onClick={() => setSelectedCategory(category)}
+    >
+      {category}
+    </button>
 
-      <button
-    style={{
-  ...buttonStyle,
-
-  backgroundColor:
-    selectedCategory === "Equity"
-      ? "#000000ff"
-      : "#464646ff",
-
-  color: "white"
-}}
-      onClick={() => setSelectedCategory("Equity")}>
-        Equity
-      </button>
-
-      <button
-    style={{
-  ...buttonStyle,
-
-  backgroundColor:
-    selectedCategory === "Small Cap"
-      ? "#000000ff"
-      : "#464646ff",
-
-  color: "white"
-}}
-      onClick={() => setSelectedCategory("Small Cap")}>
-        Small Cap
-      </button>
-      <button
-    style={{
-  ...buttonStyle,
-
-  backgroundColor:
-    selectedCategory === "Flexi Cap"
-      ? "#000000ff"
-      : "#464646ff",
-
-  color: "white"
-}}
-      onClick={() => setSelectedCategory("Flexi Cap")}>
-        Flexi Cap
-      </button>
+  ))
+}
       <br /><br />
 
-      <button
+      {
+  sortOptions.map((option) => (
+    <button
+    key={option.value}
       style={{
-  ...buttonStyle,
+        ...buttonStyle,
+        backgroundColor:
+          sortOrder === option.value
+            ? "#000000ff"
+            : "#464646ff",
 
-  backgroundColor:
-    sortOrder === "high"
-      ? "#000000ff"
-      : "#464646ff",
+        color: "white"
+      }}
+      onClick={() => setSortOrder(option.value)}
+    >
+      {option.label}
+    </button>
+  ))
+}
 
-  color: "white"
-}}
-      onClick={() => setSortOrder("high")}>
-        Highest Returns
-      </button>
 
-      <button
-      style={{
-  ...buttonStyle,
-
-  backgroundColor:
-    sortOrder === "low"
-      ? "#000000ff"
-      : "#464646ff",
-
-  color: "white"
-}}
-      onClick={() => setSortOrder("low")}>
-        Lowest Returns
-      </button>
-
-{selectedFund1 && selectedFund2 && (
-  <div  style={{
-        border: "3px solid gray",
-        padding: "20px",
-        margin: "20px auto",
-        borderRadius: "10px",
-        width: "350px"
-      }}>
-    <h2>
-      Fund Comparison
-    </h2>
-
-      <p
-  style={{
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: "20px"
-  }}
->
-  {selectedFund1.name} VS {selectedFund2.name}
-</p>
-      <p>
-  Category: {selectedFund1.category} vs {selectedFund2.category}
-</p>
-<p>
-  Returns: {selectedFund1.returns}% vs {selectedFund2.returns}%
-</p>
-<p>
-  Risk:
-
-  <span
-    style={{
-      color: getRiskColor(selectedFund1.risk)
-    }}
-  >
-    {" "}{selectedFund1.risk}
-  </span> vs <span
-    style={{
-      color: getRiskColor(selectedFund2.risk)
-    }}
-  >
-    {selectedFund2.risk}
-  </span>
-</p>
-  </div>
-)}
-
+<CompareFunds
+  selectedFund1={selectedFund1}
+  selectedFund2={selectedFund2}
+/>
       {
   filteredFunds.map((fund) => (
     <FundCard fund={fund} />
