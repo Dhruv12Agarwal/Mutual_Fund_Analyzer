@@ -1,31 +1,10 @@
-import FundCard from "./FundCard";
-import CompareFunds from "./CompareFunds";
+import FundCard from "./Components/FundCard";
+import CompareFunds from "./Components/CompareFunds";
 import { useState } from "react";
+import funds from "./data/funds";
+import { categories, sortOptions } from "./data/constants";
 
 function App() {
-
-  const funds = [
-    {
-      name: "Axis Bluechip",
-      category: "Equity",
-      returns: 14.5,
-      risk: "Medium"
-    },
-
-    {
-      name: "PPFAS Flexi Cap",
-      category: "Flexi Cap",
-      returns: 18.2,
-      risk: "Medium"
-    },
-
-    {
-      name: "HDFC Small Cap",
-      category: "Small Cap",
-      returns: 22.1,
-      risk: "High"
-    }
-  ];
 
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -78,24 +57,6 @@ const selectStyle = {
   border: "1px solid gray",
   marginBottom: "10px"
 };
-
-const categories = [
-  "All",
-  "Equity",
-  "Small Cap",
-  "Flexi Cap"
-];
-
-const sortOptions = [
-  {
-    label: "Highest Returns",
-    value: "high"
-  },
-  {
-    label: "Lowest Returns",
-    value: "low"
-  }
-];
 
 
   return (
@@ -180,28 +141,22 @@ const sortOptions = [
 <br />
 {
   categories.map((category) => (
-
     <button
     key={category}
       style={{
         ...buttonStyle,
-
         backgroundColor:
           selectedCategory === category
             ? "#000000ff"
             : "#464646ff",
         color: "white"
       }}
-
-      onClick={() => setSelectedCategory(category)}
-    >
+      onClick={() => setSelectedCategory(category)}>
       {category}
     </button>
-
   ))
 }
       <br /><br />
-
       {
   sortOptions.map((option) => (
     <button
@@ -215,8 +170,7 @@ const sortOptions = [
 
         color: "white"
       }}
-      onClick={() => setSortOrder(option.value)}
-    >
+      onClick={() => setSortOrder(option.value)}>
       {option.label}
     </button>
   ))
