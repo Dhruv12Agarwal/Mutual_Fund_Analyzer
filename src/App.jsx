@@ -1,6 +1,6 @@
 import FundCard from "./Components/FundCard";
 import CompareFunds from "./Components/CompareFunds";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import funds from "./data/funds";
 import { categories, sortOptions } from "./data/constants";
 
@@ -12,7 +12,14 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [fund1, setFund1] = useState("");
   const [fund2, setFund2] = useState("");
+  const [loading, setLoading] = useState(true);
 
+useEffect(() => {
+  setTimeout(() => {
+
+    setLoading(false);
+  }, 3000);
+}, []);
   const filteredFunds = funds.filter((fund) => {
 
   const categoryMatch =
@@ -58,7 +65,18 @@ const selectStyle = {
   marginBottom: "10px"
 };
 
-
+if (loading) {
+  return (
+    <div
+      style={{
+        textAlign: "center",
+        marginTop: "100px"
+      }}
+    >
+      <h1>Loading Funds...</h1>
+    </div>
+  );
+}
   return (
 
     <div
@@ -183,7 +201,9 @@ const selectStyle = {
 />
       {
   filteredFunds.map((fund) => (
-    <FundCard fund={fund} />
+    <FundCard
+    key={fund.name}
+    fund={fund} />
   ))
 }
 
