@@ -3,11 +3,11 @@ import CompareFunds from "./Components/CompareFunds";
 import { useState , useEffect} from "react";
 import funds from "./data/funds";
 import { categories, sortOptions } from "./data/constants";
-import TestAPI from "./TestAPI";
+// import TestAPI from "./TestAPI";
 
 function App() {
 
-  return <TestAPI />;
+  // return <TestAPI />;
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const [sortOrder, setSortOrder] = useState("high");
