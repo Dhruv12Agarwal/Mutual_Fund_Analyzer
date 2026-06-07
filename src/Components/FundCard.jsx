@@ -6,7 +6,7 @@ function getRiskColor(risk) {
   }
 
   if (risk === "Medium") {
-    return "yellow";
+    return "orange";
   }
 
   return "green";
@@ -26,7 +26,7 @@ function getRiskColor(risk) {
 
       <p>Category: {props.fund.category}</p>
 
-      <p>3Y Returns: {props.fund.returns}%</p>
+      <p>1Y Returns: {props.fund.returns1Y}%</p>
       <p>
         Risk:
         <span style={{

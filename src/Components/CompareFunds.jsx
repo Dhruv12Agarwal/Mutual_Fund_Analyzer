@@ -20,7 +20,7 @@ function CompareFunds(props ) {
         padding: "20px",
         margin: "20px auto",
         borderRadius: "10px",
-        width: "350px"
+        width: "550px"
       }}>
     <h2>
       Fund Comparison
@@ -39,7 +39,7 @@ function CompareFunds(props ) {
   Category: {props.selectedFund1.category} vs {props.selectedFund2.category}
 </p>
 <p>
-  Returns: {props.selectedFund1.returns}% vs {props.selectedFund2.returns}%
+  Returns: {props.selectedFund1.returns1Y}% vs {props.selectedFund2.returns1Y}%
 </p>
 <p>
   Risk:
