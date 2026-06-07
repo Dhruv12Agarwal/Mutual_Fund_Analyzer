@@ -1,27 +1,62 @@
 import FundCard from "./Components/FundCard";
 import CompareFunds from "./Components/CompareFunds";
 import { useState , useEffect} from "react";
-import funds from "./data/funds";
+// import funds from "./data/funds";
 import { categories, sortOptions } from "./data/constants";
 // import TestAPI from "./TestAPI";
+import RealFundsAPI from "./RealFundsAPI";
 
 function App() {
 
   // return <TestAPI />;
+  return <RealFundsAPI />;
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const [sortOrder, setSortOrder] = useState("high");
   const [searchTerm, setSearchTerm] = useState("");
   const [fund1, setFund1] = useState("");
   const [fund2, setFund2] = useState("");
+  const [funds, setFunds] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+async function getFunds() {
+
+  try {
+
+    const response = await fetch(
+      "https://jsonplaceholder.typicode.com/users"
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to load funds");
+    }
+
+    const data = await response.json();
+
+    console.log(data);
+
+  }
+  catch(error) {
+
+    setError("Failed to load funds");
+    setLoading(false);
+
+  }
+
+}
+
+// useEffect(() => {
+//   setTimeout(() => {
+
+//     setLoading(false);
+//   }, 3000);
+// }, []);
 
 useEffect(() => {
-  setTimeout(() => {
-
-    setLoading(false);
-  }, 3000);
+  getFunds();
 }, []);
+
   const filteredFunds = funds.filter((fund) => {
 
   const categoryMatch =
