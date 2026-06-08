@@ -12,7 +12,9 @@ function getRiskColor(risk) {
   return "green";
 
 }
+
   return (
+
     <div
       style={{
         border: "4px solid gray",
@@ -21,7 +23,21 @@ function getRiskColor(risk) {
         borderRadius: "10px"
       }}
     >
-
+      <button
+  onClick={() =>
+    props.removeFund(props.fund.name)
+  }
+  style={{
+    float: "right",
+    border: "none",
+    background: "none",
+    cursor: "pointer",
+    fontSize: "20px",
+    color: "#ec0f0fff"
+  }}
+>
+  ✕
+</button>
       <h2>{props.fund.name}</h2>
 
       <p>Category: {props.fund.category}</p>

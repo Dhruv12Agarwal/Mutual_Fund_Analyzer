@@ -1,8 +1,13 @@
 export const categories = [
   "All",
-  "Equity",
-  "Small Cap",
-  "Flexi Cap"
+  "Flexi Cap",
+  "Value Fund",
+  "Sectoral",
+  "Hybrid",
+  "Index Funds",
+  "Liquid",
+  "ETF",
+  "Other"
 ];
 
 export const sortOptions = [

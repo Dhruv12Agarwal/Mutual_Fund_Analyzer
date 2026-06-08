@@ -20,7 +20,24 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-function getRisk(category) {
+  const [searchResults, setSearchResults] =useState([]);
+  const [apiSearch, setApiSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] =useState("");
+  const [addingFund, setAddingFund] = useState(false);
+  const [searchingFunds, setSearchingFunds] = useState(false);
+
+  const knownCategories = [
+  "Flexi Cap",
+  "Value Fund",
+  "Sectoral",
+  "Hybrid",
+  "Liquid",
+  "Index Funds",
+  "ETF"
+];
+
+
+  function getRisk(category) {
 
   if (
     category.includes("Flexi Cap") ||
@@ -31,16 +48,9 @@ function getRisk(category) {
   }
 
   if (
-    category.includes("Value Fund") ||
-    category.includes("Index Funds") ||
-    category.includes("ETF")
-  ) {
-    return "Medium";
-  }
-
-  if (
-    category.includes("Hybrid") ||
-    category.includes("Children")
+    category.includes("Liquid") ||
+    category.includes("Money Market") ||
+    category.includes("Overnight")
   ) {
     return "Low";
   }
@@ -53,10 +63,8 @@ function getRisk(category) {
   if (navData.length <= 250) {
     return "N/A";
   }
-
   const currentNAV =
     parseFloat(navData[0].nav);
-
   const oldNAV =
     parseFloat(navData[250].nav);
 
@@ -64,7 +72,6 @@ function getRisk(category) {
     ((currentNAV - oldNAV) / oldNAV) * 100;
 
   return returns.toFixed(2);
-
 }
 
   async function getFunds() {
@@ -73,23 +80,14 @@ function getRisk(category) {
 
     const schemeCodes = [
 149166, // Axis Value Fund - Direct Plan - Growth
-
   149094, // Nippon India Flexi Cap Fund - Direct Plan - Growth
-
   122639, // Parag Parikh Flexi Cap Fund - Direct Plan - Growth
-
   148651, // ICICI Prudential Business Cycle Fund Direct Plan Growth
-
   148958, // Parag Parikh Conservative Hybrid Fund - Direct Plan - Growth
-
   148490, // SBI Children's Fund - Investment Plan - Direct Plan - Growth
-
   149107, // HDFC NIFTY50 Equal Weight Index Fund - Direct Plan - Growth
-
   147794, // Motilal Oswal Nifty 50 Index Fund - Direct plan - Growth
-
   148457, // Nippon India Multi Asset Allocation Fund - Direct Plan - Growth
-
   149156  // Axis NIFTY India Consumption ETF
     ];
 
@@ -112,11 +110,6 @@ function getRisk(category) {
     );
 
     const transformedFunds = fundResponses.map((fund) => {
-
-   console.log(
-    fund.meta.scheme_name,
-    fund.meta.scheme_category
-  );
 
   return {
 
@@ -154,22 +147,118 @@ function getRisk(category) {
 
 }
 
-// useEffect(() => {
-//   setTimeout(() => {
-
-//     setLoading(false);
-//   }, 3000);
-// }, []);
-
 useEffect(() => {
   getFunds();
 }, []);
 
+useEffect(() => {
+
+  const timer = setTimeout(() => {
+
+    setDebouncedSearch(apiSearch);
+
+  }, 500);
+
+  return () => clearTimeout(timer);
+
+}, [apiSearch]);
+
+useEffect(() => {
+  searchFunds(debouncedSearch);
+}, [debouncedSearch]);
+
+function removeFund(fundName) {
+  setFunds(
+    funds.filter(
+      (fund) => fund.name !== fundName
+    )
+  );
+}
+
+async function searchFunds(query) {
+  // console.log("Searching:", query);
+
+  if (query.trim() === "") {
+    setSearchResults([]);
+    setSearchingFunds(false);
+    return;
+  }
+  try{
+   setSearchingFunds(true);
+
+  const response = await fetch(
+    `https://api.mfapi.in/mf/search?q=${query}`
+  );
+  const data = await response.json();
+  // console.log("Finished:", query);
+
+  setSearchResults(
+    data.slice(0, 10));
+}
+catch (error) {
+  alert("Failed to search funds. Please try again.");
+}
+finally {
+  setSearchingFunds(false);
+}
+}
+async function addFund(schemeCode) {
+  try{
+    setAddingFund(true);
+
+  const response = await fetch(
+    `https://api.mfapi.in/mf/${schemeCode}`
+  );
+
+  const fund = await response.json();
+
+  const newFund = {
+    name: fund.meta.scheme_name,
+    category: fund.meta.scheme_category,
+    risk: getRisk(fund.meta.scheme_category),
+    returns1Y: calculateReturn(fund.data)
+  };
+  const alreadyExists = funds.some(
+    (f) => f.name === newFund.name
+  );
+
+  if (alreadyExists) {
+    return;
+  }
+  setFunds((prevFunds) => [
+  ...prevFunds,
+  newFund
+]);
+  setSearchResults([]);
+setApiSearch("");
+  }catch (error) {
+    alert("Failed to add fund. Please try again.");
+  }
+  finally {
+    setAddingFund(false);
+  }
+}
+
   const filteredFunds = funds.filter((fund) => {
 
-  const categoryMatch =
-    selectedCategory === "All" ;
 
+let categoryMatch;
+if (selectedCategory === "All") {
+  categoryMatch = true;
+}
+else if (selectedCategory === "Other") {
+  categoryMatch = true;
+  for (let category of knownCategories) {
+    if (fund.category.includes(category)) {
+      categoryMatch = false;
+      break;
+    }
+  }
+}
+else {
+  categoryMatch =
+    fund.category.includes(selectedCategory);
+}
 
   const searchMatch =
     fund.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -252,9 +341,53 @@ if (error) {
   type="text"
   style={selectStyle}
   placeholder="Type to search funds..."
-  value={searchTerm}
-  onChange={(e) => setSearchTerm(e.target.value)}
-/>
+  value={apiSearch}
+  onChange={(e) => {
+    setApiSearch(e.target.value);
+
+  }}/>
+
+  {
+  addingFund && (
+    <p>Adding Fund...</p>
+  )
+}
+{
+  searchingFunds &&
+  apiSearch.trim() !== "" && (
+    <p>🔍 Searching funds...</p>
+  )
+}
+{
+  searchResults.length > 0 && (
+    <h3>Search Results</h3>
+  )
+}
+{
+  searchResults.map((fund) => (
+    <div
+  key={fund.schemeCode}
+  onClick={() =>
+    addFund(fund.schemeCode)
+  }
+  style={{
+     border: "1px solid #ccc",
+    padding: "10px",
+    marginBottom: "5px",
+    marginLeft: "auto",
+    marginRight: "auto",
+    width: "600px",
+    borderRadius: "5px",
+    cursor: "pointer",
+    backgroundColor: "#000000ff",
+    color: "white",
+  }}
+>
+  ➕ {fund.schemeName}
+</div>
+  ))
+}
+
 <br />
 <h3
   style={{
@@ -350,8 +483,17 @@ if (error) {
     </button>
   ))
 }
-
-
+<br />
+<br />
+<input
+  type="text"
+  placeholder="Filter current funds..."
+    style={selectStyle}
+  value={searchTerm}
+  onChange={(e) =>
+    setSearchTerm(e.target.value)
+  }
+/>
 <CompareFunds
   selectedFund1={selectedFund1}
   selectedFund2={selectedFund2}
@@ -360,7 +502,8 @@ if (error) {
   filteredFunds.map((fund) => (
     <FundCard
     key={fund.name}
-    fund={fund} />
+    fund={fund}
+    removeFund={removeFund}/>
   ))
 }
 
