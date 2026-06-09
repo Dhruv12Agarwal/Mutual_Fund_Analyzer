@@ -5,7 +5,7 @@ import { useState , useEffect} from "react";
 import { categories, sortOptions } from "./data/constants";
 // import TestAPI from "./TestAPI";
 // import RealFundsAPI from "./RealFundsAPI";
-
+const MAX_RESULTS_TO_SHOW = 20;
 function App() {
 
   // return <TestAPI />;
@@ -15,6 +15,9 @@ function App() {
   const [sortOrder, setSortOrder] = useState("high");
   const [searchTerm, setSearchTerm] = useState("");
   const [fund1, setFund1] = useState("");
+
+  const [allSchemes, setAllSchemes] = useState([]);
+
   const [fund2, setFund2] = useState("");
   const [funds, setFunds] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,7 +77,7 @@ function App() {
   return returns.toFixed(2);
 }
 
-  async function getFunds() {
+  async function getFunds() {//loads the 10 defaukt cards.
 
   try {
 
@@ -147,8 +150,26 @@ function App() {
 
 }
 
+async function getAllSchemes() {//to load all schemes in the background for faster search results when user types in search box.
+  try {
+    const response = await fetch(
+      "https://api.mfapi.in/mf"
+    );
+
+    const data = await response.json();
+
+    setAllSchemes(data);
+
+    console.log("Total Schemes:", data.length);
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
+
 useEffect(() => {
   getFunds();
+  getAllSchemes();
 }, []);
 
 useEffect(() => {
@@ -176,31 +197,22 @@ function removeFund(fundName) {
 }
 
 async function searchFunds(query) {
-  // console.log("Searching:", query);
 
   if (query.trim() === "") {
     setSearchResults([]);
     setSearchingFunds(false);
     return;
   }
-  try{
-   setSearchingFunds(true);
 
-  const response = await fetch(
-    `https://api.mfapi.in/mf/search?q=${query}`
+  setSearchingFunds(true);
+
+  const filtered = allSchemes.filter((fund) =>
+    fund.schemeName.toLowerCase().includes(query.toLowerCase())
   );
-  const data = await response.json();
-  // console.log("Finished:", query);
 
-  setSearchResults(
-    data.slice(0, 10));
-}
-catch (error) {
-  alert("Failed to search funds. Please try again.");
-}
-finally {
+  setSearchResults(filtered.slice(0, MAX_RESULTS_TO_SHOW));
+
   setSearchingFunds(false);
-}
 }
 async function addFund(schemeCode) {
   try{
