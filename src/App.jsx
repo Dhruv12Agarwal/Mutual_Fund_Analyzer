@@ -25,9 +25,9 @@ function App() {
 
   const [searchResults, setSearchResults] =useState([]);
   const [apiSearch, setApiSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] =useState("");
+  // const [debouncedSearch, setDebouncedSearch] =useState("");
   const [addingFund, setAddingFund] = useState(false);
-  const [searchingFunds, setSearchingFunds] = useState(false);
+  // const [searchingFunds, setSearchingFunds] = useState(false);
 
   const knownCategories = [
   "Flexi Cap",
@@ -75,6 +75,27 @@ function App() {
     ((currentNAV - oldNAV) / oldNAV) * 100;
 
   return returns.toFixed(2);
+}
+
+function calculateScore(fundName, query) {
+
+  const words = query
+  .toLowerCase()
+  .trim()
+  .split(/\s+/);
+  let score = 0;
+
+  const name = fundName.toLowerCase();
+
+  for (let word of words) {
+
+    if (name.includes(word)) {
+      score++;
+    }
+
+  }
+
+  return score;
 }
 
   async function getFunds() {//loads the 10 defaukt cards.
@@ -157,13 +178,20 @@ async function getAllSchemes() {//to load all schemes in the background for fast
     );
 
     const data = await response.json();
+    const uniqueSchemes = [
+  ...new Map(
+    data.map(fund => [fund.schemeCode, fund])
+  ).values()
+];
 
-    setAllSchemes(data);
+setAllSchemes(uniqueSchemes);
 
-    console.log("Total Schemes:", data.length);
+
+
+
   }
   catch (error) {
-    console.log(error);
+
   }
 }
 
@@ -172,21 +200,21 @@ useEffect(() => {
   getAllSchemes();
 }, []);
 
-useEffect(() => {
+// useEffect(() => {
 
-  const timer = setTimeout(() => {
+//   const timer = setTimeout(() => {
 
-    setDebouncedSearch(apiSearch);
+//     setDebouncedSearch(apiSearch);
 
-  }, 500);
+//   }, 500);
 
-  return () => clearTimeout(timer);
+//   return () => clearTimeout(timer);
 
-}, [apiSearch]);
+// }, [apiSearch]);
 
-useEffect(() => {
-  searchFunds(debouncedSearch);
-}, [debouncedSearch]);
+// useEffect(() => {
+//   searchFunds(debouncedSearch);
+// }, [debouncedSearch]);
 
 function removeFund(fundName) {
   setFunds(
@@ -196,23 +224,39 @@ function removeFund(fundName) {
   );
 }
 
-async function searchFunds(query) {
+function searchFunds(query) {
 
   if (query.trim() === "") {
     setSearchResults([]);
-    setSearchingFunds(false);
+
     return;
   }
 
-  setSearchingFunds(true);
+  const words = query
+  .toLowerCase()
+  .trim()
+  .split(/\s+/);
 
-  const filtered = allSchemes.filter((fund) =>
-    fund.schemeName.toLowerCase().includes(query.toLowerCase())
+
+const filtered = allSchemes.filter((fund) => {
+
+  const name = fund.schemeName.toLowerCase();
+
+  return words.some((word) =>
+    name.includes(word)
+  );
+
+});
+
+
+  filtered.sort((a, b) =>
+    calculateScore(b.schemeName, query) -
+    calculateScore(a.schemeName, query)
   );
 
   setSearchResults(filtered.slice(0, MAX_RESULTS_TO_SHOW));
 
-  setSearchingFunds(false);
+
 }
 async function addFund(schemeCode) {
   try{
@@ -335,6 +379,8 @@ if (error) {
     </div>
   );
 }
+
+
   return (
 
     <div
@@ -355,21 +401,21 @@ if (error) {
   placeholder="Type to search funds..."
   value={apiSearch}
   onChange={(e) => {
-    setApiSearch(e.target.value);
+    const value = e.target.value;
 
-  }}/>
+    setApiSearch(value);
+
+    searchFunds(value);
+
+  }
+  }/>
 
   {
   addingFund && (
     <p>Adding Fund...</p>
   )
 }
-{
-  searchingFunds &&
-  apiSearch.trim() !== "" && (
-    <p>🔍 Searching funds...</p>
-  )
-}
+
 {
   searchResults.length > 0 && (
     <h3>Search Results</h3>
@@ -378,7 +424,7 @@ if (error) {
 {
   searchResults.map((fund) => (
     <div
-  key={fund.schemeCode}
+key={fund.schemeCode}
   onClick={() =>
     addFund(fund.schemeCode)
   }
@@ -503,8 +549,10 @@ if (error) {
     style={selectStyle}
   value={searchTerm}
   onChange={(e) =>
-    setSearchTerm(e.target.value)
-  }
+
+  setSearchTerm(e.target.value)
+}
+
 />
 <CompareFunds
   selectedFund1={selectedFund1}
