@@ -28,6 +28,9 @@ function App() {
   // const [debouncedSearch, setDebouncedSearch] =useState("");
   const [addingFund, setAddingFund] = useState(false);
   // const [searchingFunds, setSearchingFunds] = useState(false);
+  const [searchCategory, setSearchCategory] = useState("All");
+const [searchPlan, setSearchPlan] = useState("All");
+const [searchOption, setSearchOption] = useState("All");
 
   const knownCategories = [
   "Flexi Cap",
@@ -216,6 +219,10 @@ useEffect(() => {
 //   searchFunds(debouncedSearch);
 // }, [debouncedSearch]);
 
+useEffect(() => {
+  searchFunds(apiSearch);
+}, [searchCategory, searchPlan, searchOption]);
+
 function removeFund(fundName) {
   setFunds(
     funds.filter(
@@ -242,10 +249,32 @@ const filtered = allSchemes.filter((fund) => {
 
   const name = fund.schemeName.toLowerCase();
 
-  return words.some((word) =>
+  // Name search
+  const matchesSearch = words.some((word) =>
     name.includes(word)
   );
 
+  // Category filter
+  const matchesCategory =
+    searchCategory === "All" ||
+    fund.schemeName.includes(searchCategory);
+
+  // Plan filter
+  const matchesPlan =
+    searchPlan === "All" ||
+    fund.schemeName.includes(searchPlan);
+
+  // Option filter
+  const matchesOption =
+    searchOption === "All" ||
+    fund.schemeName.includes(searchOption);
+
+  return (
+    matchesSearch &&
+    matchesCategory &&
+    matchesPlan &&
+    matchesOption
+  );
 });
 
 
@@ -394,6 +423,20 @@ if (error) {
     >
 
       <h1>Mutual Fund Analyzer</h1>
+      <div
+  style={{
+     border: "1px solid #ccc",
+    borderRadius: "10px",
+    padding: "20px",
+    marginBottom: "30px",
+    width: "500px",
+    marginLeft: "auto",
+    marginRight: "auto",
+   backgroundColor: "#0f0f0fff"
+  }}
+>
+
+<h2>Add Mutual Fund</h2>
 
       <input
   type="text"
@@ -409,6 +452,66 @@ if (error) {
 
   }
   }/>
+
+<br />
+
+<select
+  style={selectStyle}
+  value={searchCategory}
+  onChange={(e) => setSearchCategory(e.target.value)}
+>
+  <option value="All">All Categories</option>
+  <option value="Flexi Cap">Flexi Cap</option>
+  <option value="Liquid">Liquid</option>
+  <option value="Hybrid">Hybrid</option>
+  <option value="Index">Index</option>
+  <option value="ETF">ETF</option>
+  <option value="Sectoral">Sectoral</option>
+</select>
+
+<br />
+
+<select
+  style={selectStyle}
+  value={searchPlan}
+  onChange={(e) => setSearchPlan(e.target.value)}
+>
+  <option value="All">All Plans</option>
+  <option value="Direct">Direct</option>
+  <option value="Regular">Regular</option>
+</select>
+
+<br />
+
+<select
+  style={selectStyle}
+  value={searchOption}
+  onChange={(e) => setSearchOption(e.target.value)}
+>
+  <option value="All">All Options</option>
+  <option value="Growth">Growth</option>
+  <option value="IDCW">IDCW</option>
+</select>
+
+{
+  apiSearch.trim() !== "" &&
+  searchResults.length === 0 && (
+    <p><b>No matching funds found.</b></p>
+  )
+}
+<br />
+<button
+  style={{...buttonStyle,backgroundColor:"#000000ff"}}
+  onClick={() => {
+    setSearchCategory("All");
+    setSearchPlan("All");
+    setSearchOption("All");
+  }}
+>
+  Reset Search Filters
+</button>
+
+<br />
 
   {
   addingFund && (
@@ -447,6 +550,7 @@ key={fund.schemeCode}
 }
 
 <br />
+</div>
 <h3
   style={{
     marginTop: "20px",
