@@ -1,8 +1,14 @@
+import { useState , useEffect} from "react";
 import FundCard from "./Components/FundCard";
 import CompareFunds from "./Components/CompareFunds";
-import { useState , useEffect} from "react";
-// import funds from "./data/funds";
+
 import { categories, sortOptions } from "./data/constants";
+
+import { getRisk } from "./utils/getRisk";
+import { calculateReturn } from "./utils/calculateReturn";
+import { calculateScore } from "./utils/calculateScore";
+import {getFunds,getAllSchemes} from "./services/fundService";
+import PortfolioControls from "./Components/PortfolioControls";
 // import TestAPI from "./TestAPI";
 // import RealFundsAPI from "./RealFundsAPI";
 const MAX_RESULTS_TO_SHOW = 20;
@@ -42,179 +48,48 @@ const [searchOption, setSearchOption] = useState("All");
   "ETF"
 ];
 
-
-  function getRisk(category) {
-
-  if (
-    category.includes("Flexi Cap") ||
-    category.includes("Sectoral") ||
-    category.includes("Thematic")
-  ) {
-    return "High";
-  }
-
-  if (
-    category.includes("Liquid") ||
-    category.includes("Money Market") ||
-    category.includes("Overnight")
-  ) {
-    return "Low";
-  }
-
-  return "Medium";
-}
-
-  function calculateReturn(navData) {
-
-  if (navData.length <= 250) {
-    return "N/A";
-  }
-  const currentNAV =
-    parseFloat(navData[0].nav);
-  const oldNAV =
-    parseFloat(navData[250].nav);
-
-  const returns =
-    ((currentNAV - oldNAV) / oldNAV) * 100;
-
-  return returns.toFixed(2);
-}
-
-function calculateScore(fundName, query) {
-
-  const words = query
-  .toLowerCase()
-  .trim()
-  .split(/\s+/);
-  let score = 0;
-
-  const name = fundName.toLowerCase();
-
-  for (let word of words) {
-
-    if (name.includes(word)) {
-      score++;
-    }
-
-  }
-
-  return score;
-}
-
-  async function getFunds() {//loads the 10 defaukt cards.
-
+  async function loadFunds() {
   try {
 
-    const schemeCodes = [
-149166, // Axis Value Fund - Direct Plan - Growth
-  149094, // Nippon India Flexi Cap Fund - Direct Plan - Growth
-  122639, // Parag Parikh Flexi Cap Fund - Direct Plan - Growth
-  148651, // ICICI Prudential Business Cycle Fund Direct Plan Growth
-  148958, // Parag Parikh Conservative Hybrid Fund - Direct Plan - Growth
-  148490, // SBI Children's Fund - Investment Plan - Direct Plan - Growth
-  149107, // HDFC NIFTY50 Equal Weight Index Fund - Direct Plan - Growth
-  147794, // Motilal Oswal Nifty 50 Index Fund - Direct plan - Growth
-  148457, // Nippon India Multi Asset Allocation Fund - Direct Plan - Growth
-  149156  // Axis NIFTY India Consumption ETF
-    ];
-
-    const fundResponses = await Promise.all(
-
-      schemeCodes.map(async (code) => {
-
-        const response = await fetch(
-          `https://api.mfapi.in/mf/${code}`
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch fund");
-        }
-
-        return await response.json();
-
-      })
-
-    );
-
-    const transformedFunds = fundResponses.map((fund) => {
-
-  return {
-
-    name: fund.meta.scheme_name,
-
-    category: fund.meta.scheme_category,
-
-    risk: getRisk(
-      fund.meta.scheme_category
-    ),
-
-    returns1Y: calculateReturn(
-      fund.data
-    )
-
-  };
-
-});
+    const transformedFunds = await getFunds();
 
     setFunds(transformedFunds);
 
-  }
-  catch (error) {
+  } catch (error) {
 
     setError(
       "Failed to load funds. Please try again."
     );
 
-  }
-  finally {
+  } finally {
 
     setLoading(false);
 
   }
-
 }
 
-async function getAllSchemes() {//to load all schemes in the background for faster search results when user types in search box.
+async function loadAllSchemes() {
   try {
-    const response = await fetch(
-      "https://api.mfapi.in/mf"
-    );
+    const uniqueSchemes = await getAllSchemes();
 
-    const data = await response.json();
-    const uniqueSchemes = [
-  ...new Map(
-    data.map(fund => [fund.schemeCode, fund])
-  ).values()
-];
-
-setAllSchemes(uniqueSchemes);
-
-
-
-
+    setAllSchemes(uniqueSchemes);
   }
   catch (error) {
-
+    console.log(error);
   }
 }
 
 useEffect(() => {
-  getFunds();
-  getAllSchemes();
+  loadFunds();
+  loadAllSchemes();
 }, []);
 
 // useEffect(() => {
-
 //   const timer = setTimeout(() => {
-
 //     setDebouncedSearch(apiSearch);
-
 //   }, 500);
-
 //   return () => clearTimeout(timer);
-
 // }, [apiSearch]);
-
 // useEffect(() => {
 //   searchFunds(debouncedSearch);
 // }, [debouncedSearch]);
@@ -243,7 +118,6 @@ function searchFunds(query) {
   .toLowerCase()
   .trim()
   .split(/\s+/);
-
 
 const filtered = allSchemes.filter((fund) => {
 
@@ -277,14 +151,11 @@ const filtered = allSchemes.filter((fund) => {
   );
 });
 
-
   filtered.sort((a, b) =>
-    calculateScore(b.schemeName, query) -
-    calculateScore(a.schemeName, query)
+    calculateScore(b.schemeName, query) -calculateScore(a.schemeName, query)
   );
 
   setSearchResults(filtered.slice(0, MAX_RESULTS_TO_SHOW));
-
 
 }
 async function addFund(schemeCode) {
@@ -325,7 +196,6 @@ setApiSearch("");
 }
 
   const filteredFunds = funds.filter((fund) => {
-
 
 let categoryMatch;
 if (selectedCategory === "All") {
@@ -609,55 +479,20 @@ key={fund.schemeCode}
 
 <br />
 <br />
-{
-  categories.map((category) => (
-    <button
-    key={category}
-      style={{
-        ...buttonStyle,
-        backgroundColor:
-          selectedCategory === category
-            ? "#000000ff"
-            : "#464646ff",
-        color: "white"
-      }}
-      onClick={() => setSelectedCategory(category)}>
-      {category}
-    </button>
-  ))
-}
-      <br /><br />
-      {
-  sortOptions.map((option) => (
-    <button
-    key={option.value}
-      style={{
-        ...buttonStyle,
-        backgroundColor:
-          sortOrder === option.value
-            ? "#000000ff"
-            : "#464646ff",
 
-        color: "white"
-      }}
-      onClick={() => setSortOrder(option.value)}>
-      {option.label}
-    </button>
-  ))
-}
-<br />
-<br />
-<input
-  type="text"
-  placeholder="Filter current funds..."
-    style={selectStyle}
-  value={searchTerm}
-  onChange={(e) =>
-
-  setSearchTerm(e.target.value)
-}
-
+<PortfolioControls
+  categories={categories}
+  selectedCategory={selectedCategory}
+  setSelectedCategory={setSelectedCategory}
+  sortOptions={sortOptions}
+  sortOrder={sortOrder}
+  setSortOrder={setSortOrder}
+  buttonStyle={buttonStyle}
+  selectStyle={selectStyle}
+  searchTerm={searchTerm}
+  setSearchTerm={setSearchTerm}
 />
+
 <CompareFunds
   selectedFund1={selectedFund1}
   selectedFund2={selectedFund2}
