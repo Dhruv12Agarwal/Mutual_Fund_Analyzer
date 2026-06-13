@@ -9,11 +9,12 @@ import { calculateReturn } from "./utils/calculateReturn";
 import { calculateScore } from "./utils/calculateScore";
 import {getFunds,getAllSchemes} from "./services/fundService";
 import PortfolioControls from "./Components/PortfolioControls";
+import SIPCalculator from "./Components/SIPCalculator";
 // import TestAPI from "./TestAPI";
 // import RealFundsAPI from "./RealFundsAPI";
 const MAX_RESULTS_TO_SHOW = 20;
-function App() {
 
+function App() {
   // return <TestAPI />;
   // return <RealFundsAPI />;
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -64,7 +65,6 @@ const [searchOption, setSearchOption] = useState("All");
   } finally {
 
     setLoading(false);
-
   }
 }
 
@@ -214,12 +214,10 @@ else {
   categoryMatch =
     fund.category.includes(selectedCategory);
 }
-
   const searchMatch =
     fund.name.toLowerCase().includes(searchTerm.toLowerCase())
 
   return categoryMatch && searchMatch;
-
 });
 const selectedFund1 = funds.find(
   (fund) => fund.name === fund1
@@ -279,7 +277,6 @@ if (error) {
   );
 }
 
-
   return (
 
     <div
@@ -291,7 +288,6 @@ if (error) {
     fontFamily: "Arial"
   }}
     >
-
       <h1>Mutual Fund Analyzer</h1>
       <div
   style={{
@@ -338,9 +334,7 @@ if (error) {
   <option value="ETF">ETF</option>
   <option value="Sectoral">Sectoral</option>
 </select>
-
 <br />
-
 <select
   style={selectStyle}
   value={searchPlan}
@@ -362,7 +356,6 @@ if (error) {
   <option value="Growth">Growth</option>
   <option value="IDCW">IDCW</option>
 </select>
-
 {
   apiSearch.trim() !== "" &&
   searchResults.length === 0 && (
@@ -382,13 +375,11 @@ if (error) {
 </button>
 
 <br />
-
   {
   addingFund && (
     <p>Adding Fund...</p>
   )
 }
-
 {
   searchResults.length > 0 && (
     <h3>Search Results</h3>
@@ -418,7 +409,6 @@ key={fund.schemeCode}
 </div>
   ))
 }
-
 <br />
 </div>
 <h3
@@ -447,7 +437,6 @@ key={fund.schemeCode}
       value={fund.name}>
         {fund.name}
       </option>
-
     ))
   }
 
@@ -476,8 +465,9 @@ key={fund.schemeCode}
   }
 
 </select>
-
 <br />
+<br />
+<SIPCalculator funds={funds} />
 <br />
 
 <PortfolioControls
@@ -493,6 +483,8 @@ key={fund.schemeCode}
   setSearchTerm={setSearchTerm}
 />
 
+
+
 <CompareFunds
   selectedFund1={selectedFund1}
   selectedFund2={selectedFund2}
@@ -505,7 +497,6 @@ key={fund.schemeCode}
     removeFund={removeFund}/>
   ))
 }
-
     </div>
   );
 }
