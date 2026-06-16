@@ -1,0 +1,49 @@
+.sip-container{
+    width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #000000;
+    border: 1px solid #3a3a3a;
+    border-radius: 15px;
+
+}
+
+.sip-input{
+    width: 250px;
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 6px;
+    border: 1px solid #555;
+    font-size: 15px;
+}
+
+.sip-container label {
+    font-weight: 600;
+}
+
+.sip-container h2{
+    margin-bottom: 25px;
+    font-size: 30px;
+}
+
+.result-card {
+    background-color: #1c1b1b;
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 18px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.result-card h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #cfcfcf;
+}
+
+.result-card h2 {
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-size: 28px;
+    color: white;
+}

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./SIPCalculator.css";
 
 function SIPCalculator({ funds }) {
 
@@ -58,7 +59,7 @@ const estimatedReturns = maturityAmount - totalInvestment;
 
 
   return (
-     <div style={containerStyle}>
+     <div className="sip-container">
 
       <h2>SIP Calculator</h2>
       <br />
@@ -68,7 +69,7 @@ const estimatedReturns = maturityAmount - totalInvestment;
         <label>Choose Mutual Fund (Optional)</label>
 
             <select
-              style={inputStyle}
+              className="sip-input"
               value={selectedFund}
               onChange={(e) => setSelectedFund(e.target.value)}
             >
@@ -206,21 +207,35 @@ const estimatedReturns = maturityAmount - totalInvestment;
 
 <h3>Results</h3>
 
-<p>
-  <strong>Total Investment:</strong> ₹
-  {Math.round(totalInvestment).toLocaleString("en-IN")}
-</p>
+<div className="result-card">
+    <p className="result-title">
+        💰 Total Investment
+    </p>
 
-<p>
-  <strong>Estimated Returns:</strong> ₹
-  {Math.round(estimatedReturns).toLocaleString("en-IN")}
-</p>
+    <p className="result-value">
+        ₹{Math.round(totalInvestment).toLocaleString("en-IN")}
+    </p>
+</div>
 
-<p>
-  <strong>Total Value:</strong> ₹
-  {Math.round(maturityAmount).toLocaleString("en-IN")}
-</p>
+<div className="result-card">
+    <p className="result-title">
+        📈 Estimated Returns
+    </p>
 
+    <p className="result-value">
+        ₹{Math.round(estimatedReturns).toLocaleString("en-IN")}
+    </p>
+</div>
+
+<div className="result-card">
+    <p className="result-title">
+        💎 Total Value
+    </p>
+
+    <p className="result-value">
+        ₹{Math.round(maturityAmount).toLocaleString("en-IN")}
+    </p>
+</div>
        </div>
        <br />
        <hr />
