@@ -3,16 +3,13 @@ import FundCard from "./Components/FundCard";
 import CompareFunds from "./Components/CompareFunds";
 
 import { categories, sortOptions } from "./data/constants";
-import { buttonStyle, selectStyle } from "./styles/styles";
 
 import { getRisk } from "./utils/getRisk";
 import { calculateReturn } from "./utils/calculateReturn";
 import { calculateScore } from "./utils/calculateScore";
 import {getFunds,getAllSchemes} from "./services/fundService";
-import SearchSection from "./Components/SearchSection";
 import PortfolioControls from "./Components/PortfolioControls";
 import SIPCalculator from "./Components/SIPCalculator";
-import CompareSelector from "./Components/CompareSelector";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -26,6 +23,8 @@ import Calculator from "./pages/Calculator";
 const MAX_RESULTS_TO_SHOW = 20;
 
 function App() {
+  // return <TestAPI />;
+  // return <RealFundsAPI />;
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const [sortOrder, setSortOrder] = useState("high");
@@ -246,6 +245,21 @@ const selectedFund2 = funds.find(
 
   });
 
+const buttonStyle = {
+  border: "1px solid gray",
+  marginRight: "10px",
+  padding: "8px 15px",
+  borderRadius: "5px",
+  cursor: "pointer"
+};
+const selectStyle = {
+  padding: "10px",
+  width: "250px",
+  borderRadius: "5px",
+  border: "1px solid gray",
+  marginBottom: "10px"
+};
+
 if (loading) {
   return (
     <div
@@ -273,6 +287,23 @@ if (error) {
 
   return (
 
+//     <BrowserRouter>
+
+//     <Routes>
+
+//       <Route path="/" element={<Home />} />
+
+//       <Route path="/portfolio" element={<Portfolio />} />
+
+//       <Route path="/compare" element={<Compare />} />
+
+//       <Route path="/calculator" element={<Calculator />} />
+
+//     </Routes>
+
+//   </BrowserRouter>
+// );
+
     <div
 
     style={{
@@ -283,40 +314,184 @@ if (error) {
   }}
     >
       <h1>Mutual Fund Analyzer</h1>
-      <SearchSection
-    apiSearch={apiSearch}
-    setApiSearch={setApiSearch}
-    searchFunds={searchFunds}
+      <div
+  style={{
+     border: "1px solid #ccc",
+    borderRadius: "10px",
+    padding: "20px",
+    marginBottom: "30px",
+    width: "500px",
+    marginLeft: "auto",
+    marginRight: "auto",
+   backgroundColor: "#0f0f0fff"
+  }}
+>
 
-    searchCategory={searchCategory}
-    setSearchCategory={setSearchCategory}
+<h2>Add Mutual Fund</h2>
 
-    searchPlan={searchPlan}
-    setSearchPlan={setSearchPlan}
+      <input
+  type="text"
+  style={selectStyle}
+  placeholder="Type to search funds..."
+  value={apiSearch}
+  onChange={(e) => {
+    const value = e.target.value;
 
-    searchOption={searchOption}
-    setSearchOption={setSearchOption}
+    setApiSearch(value);
 
-    searchResults={searchResults}
+    searchFunds(value);
 
-    addingFund={addingFund}
+  }
+  }/>
 
-    addFund={addFund}
+<br />
 
-    buttonStyle={buttonStyle}
-    selectStyle={selectStyle}
-/>
-<CompareSelector
-    funds={funds}
+<select
+  style={selectStyle}
+  value={searchCategory}
+  onChange={(e) => setSearchCategory(e.target.value)}
+>
+  <option value="All">All Categories</option>
+  <option value="Flexi Cap">Flexi Cap</option>
+  <option value="Liquid">Liquid</option>
+  <option value="Hybrid">Hybrid</option>
+  <option value="Index">Index</option>
+  <option value="ETF">ETF</option>
+  <option value="Sectoral">Sectoral</option>
+</select>
+<br />
+<select
+  style={selectStyle}
+  value={searchPlan}
+  onChange={(e) => setSearchPlan(e.target.value)}
+>
+  <option value="All">All Plans</option>
+  <option value="Direct">Direct</option>
+  <option value="Regular">Regular</option>
+</select>
 
-    fund1={fund1}
-    setFund1={setFund1}
+<br />
 
-    fund2={fund2}
-    setFund2={setFund2}
+<select
+  style={selectStyle}
+  value={searchOption}
+  onChange={(e) => setSearchOption(e.target.value)}
+>
+  <option value="All">All Options</option>
+  <option value="Growth">Growth</option>
+  <option value="IDCW">IDCW</option>
+</select>
+{
+  apiSearch.trim() !== "" &&
+  searchResults.length === 0 && (
+    <p><b>No matching funds found.</b></p>
+  )
+}
+<br />
+<button
+  style={{...buttonStyle,backgroundColor:"#000000ff"}}
+  onClick={() => {
+    setSearchCategory("All");
+    setSearchPlan("All");
+    setSearchOption("All");
+  }}
+>
+  Reset Search Filters
+</button>
 
-    selectStyle={selectStyle}
-/>
+<br />
+  {
+  addingFund && (
+    <p>Adding Fund...</p>
+  )
+}
+{
+  searchResults.length > 0 && (
+    <h3>Search Results</h3>
+  )
+}
+{
+  searchResults.map((fund) => (
+    <div
+key={fund.schemeCode}
+  onClick={() =>
+    addFund(fund.schemeCode)
+  }
+  style={{
+     border: "1px solid #ccc",
+    padding: "10px",
+    marginBottom: "5px",
+    marginLeft: "auto",
+    marginRight: "auto",
+    width: "600px",
+    borderRadius: "5px",
+    cursor: "pointer",
+    backgroundColor: "#000000ff",
+    color: "white",
+  }}
+>
+  ➕ {fund.schemeName}
+</div>
+  ))
+}
+<br />
+</div>
+<h3
+  style={{
+    marginTop: "20px",
+    marginBottom: "10px"
+  }}
+>
+  Select Funds to Compare
+</h3>
+<select
+  style={selectStyle}
+  value={fund1}
+  onChange={(e) => setFund1(e.target.value)}
+>
+
+  <option value="">
+    Select First Fund
+  </option>
+
+  {
+    funds.map((fund) => (
+
+      <option
+      key={fund.name}
+      value={fund.name}>
+        {fund.name}
+      </option>
+    ))
+  }
+
+</select>
+<br />
+<select
+  value={fund2}
+  style={selectStyle}
+  onChange={(e) => setFund2(e.target.value)}
+>
+
+  <option value="">
+    Select Second Fund
+  </option>
+
+  {
+    funds.map((fund) => (
+
+      <option
+      key={fund.name}
+      value={fund.name}>
+        {fund.name}
+      </option>
+
+    ))
+  }
+
+</select>
+<br />
+<br />
 <SIPCalculator funds={funds} />
 <br />
 
