@@ -11,5 +11,8 @@ export const selectStyle = {
   width: "250px",
   borderRadius: "5px",
   border: "1px solid gray",
-  marginBottom: "10px"
+  marginBottom: "10px",
+
+  backgroundColor: "#2e303a",
+  color: "#f3f4f6"
 };

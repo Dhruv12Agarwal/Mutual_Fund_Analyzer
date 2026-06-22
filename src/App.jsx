@@ -282,18 +282,14 @@ if (error) {
   return (
 
     <div
-  style={{
-    backgroundColor: "#16171d",
-    color: "#f3f4f6",
 
-    border: "5px solid black",
-    margin: "25px",
+    style={{
+      border: "5px solid black",
+      margin: "25px",
     padding: "40px",
-    fontFamily: "Arial",
-
-    minHeight: "100vh"
+    fontFamily: "Arial"
   }}
->
+    >
       <h1>Mutual Fund Analyzer</h1>
       <SearchSection
     apiSearch={apiSearch}
