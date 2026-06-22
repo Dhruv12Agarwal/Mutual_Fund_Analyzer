@@ -328,6 +328,13 @@ if (error) {
 
     selectStyle={selectStyle}
 />
+
+<CompareFunds
+  selectedFund1={selectedFund1}
+  selectedFund2={selectedFund2}
+  openCompareChart={() => setShowCompareChart(true)}
+/>
+
 <SIPCalculator funds={funds} />
 <br />
 
@@ -346,11 +353,7 @@ if (error) {
 
 
 
-<CompareFunds
-  selectedFund1={selectedFund1}
-  selectedFund2={selectedFund2}
-  openCompareChart={() => setShowCompareChart(true)}
-/>
+
       {
   filteredFunds.map((fund) => (
     <FundCard
