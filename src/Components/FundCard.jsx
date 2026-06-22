@@ -1,3 +1,5 @@
+import NAVChart from "./NAVChart";
+
 function FundCard(props) {
 function getRiskColor(risk) {
 
@@ -12,7 +14,7 @@ function getRiskColor(risk) {
   return "green";
 
 }
-
+console.log("Fund Object:", props.fund);
   return (
 
     <div
@@ -51,6 +53,20 @@ function getRiskColor(risk) {
           {" "}{props.fund.risk}
         </span>
       </p>
+
+      {/* <NAVChart historicalData={props.fund.historicalData} /> */}
+
+      <button
+        onClick={() => props.openChart(props.fund)}
+        style={{
+        backgroundColor: "#000000",
+        marginTop: "10px",
+        padding: "10px 20px",
+        cursor: "pointer"
+  }}
+>
+    📈 View NAV History
+</button>
 
     </div>
   );

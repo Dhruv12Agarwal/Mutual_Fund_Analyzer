@@ -51,7 +51,8 @@ export async function getFunds() {
     name: fund.meta.scheme_name,
     category: fund.meta.scheme_category,
     risk: getRisk(fund.meta.scheme_category),
-    returns1Y: calculateReturn(fund.data)
+    returns1Y: calculateReturn(fund.data),
+    historicalData: fund.data
   }));
 
   return transformedFunds;

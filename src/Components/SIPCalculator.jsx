@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./SIPCalculator.css";
+import SIPPieChart from "./SIPPieChart";
 
 function SIPCalculator({ funds }) {
 
@@ -235,7 +236,14 @@ const estimatedReturns = maturityAmount - totalInvestment;
     <p className="result-value">
         ₹{Math.round(maturityAmount).toLocaleString("en-IN")}
     </p>
+
+
 </div>
+<h3><strong><u>Investment Breakdown</u></strong></h3>
+    <SIPPieChart
+    totalInvestment={totalInvestment}
+    estimatedReturns={estimatedReturns}
+/>
        </div>
        <br />
        <hr />

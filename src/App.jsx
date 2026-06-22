@@ -14,6 +14,10 @@ import PortfolioControls from "./Components/PortfolioControls";
 import SIPCalculator from "./Components/SIPCalculator";
 import CompareSelector from "./Components/CompareSelector";
 
+// import SIPPieChart from "./Components/SIPPieChart";
+import ChartPopup from "./Components/ChartPopup";
+import NAVChart from "./Components/NAVChart";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
@@ -47,6 +51,8 @@ function App() {
   const [searchCategory, setSearchCategory] = useState("All");
 const [searchPlan, setSearchPlan] = useState("All");
 const [searchOption, setSearchOption] = useState("All");
+
+const [selectedFund, setSelectedFund] = useState(null);//for popup
 
   const knownCategories = [
   "Flexi Cap",
@@ -176,12 +182,13 @@ async function addFund(schemeCode) {
   );
 
   const fund = await response.json();
-
+  console.log(fund.data);
   const newFund = {
     name: fund.meta.scheme_name,
     category: fund.meta.scheme_category,
     risk: getRisk(fund.meta.scheme_category),
-    returns1Y: calculateReturn(fund.data)
+    returns1Y: calculateReturn(fund.data),
+    historicalData: fund.data
   };
   const alreadyExists = funds.some(
     (f) => f.name === newFund.name
@@ -306,6 +313,9 @@ if (error) {
     buttonStyle={buttonStyle}
     selectStyle={selectStyle}
 />
+
+
+
 <CompareSelector
     funds={funds}
 
@@ -344,9 +354,25 @@ if (error) {
     <FundCard
     key={fund.name}
     fund={fund}
-    removeFund={removeFund}/>
+    removeFund={removeFund}
+      openChart={setSelectedFund}
+/>
   ))
 }
+
+<ChartPopup
+  isOpen={selectedFund !== null}
+  title={selectedFund?.name}
+  onClose={() => setSelectedFund(null)}
+>
+
+  {selectedFund && (
+    <NAVChart
+      historicalData={selectedFund.historicalData}//children parameter
+    />
+  )}
+
+</ChartPopup>
     </div>
   );
 }
