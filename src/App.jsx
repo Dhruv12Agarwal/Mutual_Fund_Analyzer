@@ -17,6 +17,7 @@ import CompareSelector from "./Components/CompareSelector";
 // import SIPPieChart from "./Components/SIPPieChart";
 import ChartPopup from "./Components/ChartPopup";
 import NAVChart from "./Components/NAVChart";
+import CompareChart from "./Components/CompareChart";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -35,10 +36,9 @@ function App() {
   const [sortOrder, setSortOrder] = useState("high");
   const [searchTerm, setSearchTerm] = useState("");
   const [fund1, setFund1] = useState("");
+  const [fund2, setFund2] = useState("");
 
   const [allSchemes, setAllSchemes] = useState([]);
-
-  const [fund2, setFund2] = useState("");
   const [funds, setFunds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -53,6 +53,7 @@ const [searchPlan, setSearchPlan] = useState("All");
 const [searchOption, setSearchOption] = useState("All");
 
 const [selectedFund, setSelectedFund] = useState(null);//for popup
+const [showCompareChart, setShowCompareChart] = useState(false);
 
   const knownCategories = [
   "Flexi Cap",
@@ -348,6 +349,7 @@ if (error) {
 <CompareFunds
   selectedFund1={selectedFund1}
   selectedFund2={selectedFund2}
+  openCompareChart={() => setShowCompareChart(true)}
 />
       {
   filteredFunds.map((fund) => (
@@ -371,6 +373,19 @@ if (error) {
       historicalData={selectedFund.historicalData}//children parameter
     />
   )}
+
+</ChartPopup>
+
+<ChartPopup
+    isOpen={showCompareChart}
+    title="Fund Comparison"
+    onClose={() => setShowCompareChart(false)}
+>
+
+    <CompareChart
+    fund1={selectedFund1}
+    fund2={selectedFund2}
+/>
 
 </ChartPopup>
     </div>

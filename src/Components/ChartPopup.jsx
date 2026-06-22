@@ -11,6 +11,7 @@ function ChartPopup({
 
   return (
     <div
+     onClick={onClose}
       style={{
         position: "fixed",
         top: 0,
@@ -27,11 +28,13 @@ function ChartPopup({
       }}
     >
       <div
+      onClick={(e) => e.stopPropagation()}
         style={{
-          backgroundColor: "#141314ff",
+          backgroundColor: "#1e1c1eff",
+
           width: "90%",
           maxWidth: "1100px",
-          height: "70vh",
+          height: "80vh",
           borderRadius: "12px",
           padding: "25px",
           position: "relative",

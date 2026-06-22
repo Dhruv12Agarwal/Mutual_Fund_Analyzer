@@ -58,6 +58,23 @@ function CompareFunds(props ) {
     {props.selectedFund2.risk}
   </span>
 </p>
+
+<button
+  onClick={() => props.openCompareChart()}
+  style={{
+    marginTop: "20px",
+    padding: "10px 20px",
+    backgroundColor: "#00C853",
+    color: "black",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold"
+  }}
+>
+    📈 Compare NAV
+</button>
+
   </div>
 )}
     </div>
