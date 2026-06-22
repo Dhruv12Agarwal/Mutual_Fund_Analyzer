@@ -290,7 +290,7 @@ if (error) {
     fontFamily: "Arial"
   }}
     >
-      <h1>Mutual Fund Analyzer</h1>
+      <h1>Mutual Fund Analyzer Test</h1>
       <SearchSection
     apiSearch={apiSearch}
     setApiSearch={setApiSearch}
