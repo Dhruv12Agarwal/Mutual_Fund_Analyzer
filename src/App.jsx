@@ -19,12 +19,14 @@ import ChartPopup from "./Components/ChartPopup";
 import NAVChart from "./Components/NAVChart";
 import CompareChart from "./Components/CompareChart";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Portfolio from "./pages/Portfolio";
 import Compare from "./pages/Compare";
 import Calculator from "./pages/Calculator";
+
+import Navbar from "./Components/Navbar";
 
 // import TestAPI from "./TestAPI";
 // import RealFundsAPI from "./RealFundsAPI";
@@ -280,119 +282,165 @@ if (error) {
 }
 
   return (
+    <>
+    <Navbar />
 
-    <div
+    <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/calculator" element={<Calculator funds={funds}/>} />
+        <Route path="/compare" element={<Compare funds={funds}
 
-    style={{
-      border: "5px solid black",
-      margin: "25px",
-    padding: "40px",
-    fontFamily: "Arial"
-  }}
-    >
-      <h1>Mutual Fund Analyzer</h1>
-      <SearchSection
-    apiSearch={apiSearch}
-    setApiSearch={setApiSearch}
-    searchFunds={searchFunds}
+            fund1={fund1}
+            setFund1={setFund1}
 
-    searchCategory={searchCategory}
-    setSearchCategory={setSearchCategory}
+            fund2={fund2}
+            setFund2={setFund2}
 
-    searchPlan={searchPlan}
-    setSearchPlan={setSearchPlan}
+            selectedFund1={selectedFund1}
+            selectedFund2={selectedFund2}
 
-    searchOption={searchOption}
-    setSearchOption={setSearchOption}
+            showCompareChart={showCompareChart}
+            setShowCompareChart={setShowCompareChart}
 
-    searchResults={searchResults}
+            selectStyle={selectStyle}/>} />
+        <Route
+    path="/portfolio"
+    element={
+        <Portfolio
+            categories={categories}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            sortOptions={sortOptions}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            buttonStyle={buttonStyle}
+            selectStyle={selectStyle}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            filteredFunds={filteredFunds}
+            selectedFund={selectedFund}
+            setSelectedFund={setSelectedFund}
+            removeFund={removeFund}
+        />
 
-    addingFund={addingFund}
-
-    addFund={addFund}
-
-    buttonStyle={buttonStyle}
-    selectStyle={selectStyle}
+    }
 />
-
-
-
-<CompareSelector
-    funds={funds}
-
-    fund1={fund1}
-    setFund1={setFund1}
-
-    fund2={fund2}
-    setFund2={setFund2}
-
-    selectStyle={selectStyle}
-/>
-
-<CompareFunds
-  selectedFund1={selectedFund1}
-  selectedFund2={selectedFund2}
-  openCompareChart={() => setShowCompareChart(true)}
-/>
-
-<SIPCalculator funds={funds} />
-<br />
-
-<PortfolioControls
-  categories={categories}
-  selectedCategory={selectedCategory}
-  setSelectedCategory={setSelectedCategory}
-  sortOptions={sortOptions}
-  sortOrder={sortOrder}
-  setSortOrder={setSortOrder}
-  buttonStyle={buttonStyle}
-  selectStyle={selectStyle}
-  searchTerm={searchTerm}
-  setSearchTerm={setSearchTerm}
-/>
-
-
-
-
-      {
-  filteredFunds.map((fund) => (
-    <FundCard
-    key={fund.name}
-    fund={fund}
-    removeFund={removeFund}
-      openChart={setSelectedFund}
-/>
-  ))
-}
-
-<ChartPopup
-  isOpen={selectedFund !== null}
-  title={selectedFund?.name}
-  onClose={() => setSelectedFund(null)}
->
-
-  {selectedFund && (
-    <NAVChart
-      historicalData={selectedFund.historicalData}//children parameter
-    />
-  )}
-
-</ChartPopup>
-
-<ChartPopup
-    isOpen={showCompareChart}
-    title="Fund Comparison"
-    onClose={() => setShowCompareChart(false)}
->
-
-    <CompareChart
-    fund1={selectedFund1}
-    fund2={selectedFund2}
-/>
-
-</ChartPopup>
-    </div>
+    </Routes>
+    </>
   );
+
+//     <div
+
+//     style={{
+//       border: "5px solid black",
+//       margin: "25px",
+//     padding: "40px",
+//     fontFamily: "Arial"
+//   }}
+//     >
+//       <h1>Mutual Fund Analyzer</h1>
+//       <SearchSection
+//     apiSearch={apiSearch}
+//     setApiSearch={setApiSearch}
+//     searchFunds={searchFunds}
+
+//     searchCategory={searchCategory}
+//     setSearchCategory={setSearchCategory}
+
+//     searchPlan={searchPlan}
+//     setSearchPlan={setSearchPlan}
+
+//     searchOption={searchOption}
+//     setSearchOption={setSearchOption}
+
+//     searchResults={searchResults}
+
+//     addingFund={addingFund}
+
+//     addFund={addFund}
+
+//     buttonStyle={buttonStyle}
+//     selectStyle={selectStyle}
+// />
+
+
+
+// <CompareSelector
+//     funds={funds}
+
+//     fund1={fund1}
+//     setFund1={setFund1}
+
+//     fund2={fund2}
+//     setFund2={setFund2}
+
+//     selectStyle={selectStyle}
+// />
+
+// <CompareFunds
+//   selectedFund1={selectedFund1}
+//   selectedFund2={selectedFund2}
+//   openCompareChart={() => setShowCompareChart(true)}
+// />
+
+// <SIPCalculator funds={funds} />
+// <br />
+
+// <PortfolioControls
+//   categories={categories}
+//   selectedCategory={selectedCategory}
+//   setSelectedCategory={setSelectedCategory}
+//   sortOptions={sortOptions}
+//   sortOrder={sortOrder}
+//   setSortOrder={setSortOrder}
+//   buttonStyle={buttonStyle}
+//   selectStyle={selectStyle}
+//   searchTerm={searchTerm}
+//   setSearchTerm={setSearchTerm}
+// />
+
+
+
+
+//       {
+//   filteredFunds.map((fund) => (
+//     <FundCard
+//     key={fund.name}
+//     fund={fund}
+//     removeFund={removeFund}
+//       openChart={setSelectedFund}
+// />
+//   ))
+// }
+
+// <ChartPopup
+//   isOpen={selectedFund !== null}
+//   title={selectedFund?.name}
+//   onClose={() => setSelectedFund(null)}
+// >
+
+//   {selectedFund && (
+//     <NAVChart
+//       historicalData={selectedFund.historicalData}//children parameter
+//     />
+//   )}
+
+// </ChartPopup>
+
+// <ChartPopup
+//     isOpen={showCompareChart}
+//     title="Fund Comparison"
+//     onClose={() => setShowCompareChart(false)}
+// >
+
+//     <CompareChart
+//     fund1={selectedFund1}
+//     fund2={selectedFund2}
+// />
+
+// </ChartPopup>
+//     </div>
+//   );
 }
 
 export default App;
