@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getRisk } from "../utils/getRisk";
 import { calculateReturn } from "../utils/calculateReturn";
+import NAVChart from "../Components/NAVChart";
 
 function FundDetails({addFund}) {
 
@@ -66,6 +67,17 @@ const returns =
             1Y Return:
             {returns}%
         </h3>
+
+        <div
+            style={{
+                height: "450px",
+                marginTop: "30px"
+            }}
+        >
+            <NAVChart
+                historicalData={fund.data}
+            />
+        </div>
 
         <button
     onClick={() => {
