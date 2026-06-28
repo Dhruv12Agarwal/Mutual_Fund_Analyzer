@@ -43,6 +43,7 @@ function App() {
 
   const [allSchemes, setAllSchemes] = useState([]);
   const [funds, setFunds] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -177,43 +178,21 @@ const filtered = allSchemes.filter((fund) => {
   setSearchResults(filtered.slice(0, MAX_RESULTS_TO_SHOW));
 
 }
-async function addFund(schemeCode) {
-  try{
-    setAddingFund(true);
+function addFund(newFund) {
 
-  const response = await fetch(
-    `https://api.mfapi.in/mf/${schemeCode}`
-  );
+    const alreadyExists =
+        funds.some((f) =>f.name === newFund.name
+        );
 
-  const fund = await response.json();
-  console.log(fund.data);
+    if (alreadyExists) {
+        return false;
+    }
 
-  const newFund = {
-    name: fund.meta.scheme_name,
-    category: fund.meta.scheme_category,
-    risk: getRisk(fund.meta.scheme_category),
-    returns1Y: calculateReturn(fund.data),
-    historicalData: fund.data
-  };
-  const alreadyExists = funds.some(
-    (f) => f.name === newFund.name
-  );
-
-  if (alreadyExists) {
-    return;
-  }
-  setFunds((prevFunds) => [
-  ...prevFunds,
-  newFund
-]);
-  setSearchResults([]);
-setApiSearch("");
-  }catch (error) {
-    alert("Failed to add fund. Please try again.");
-  }
-  finally {
-    setAddingFund(false);
-  }
+    setFunds((prevFunds) => [
+        ...prevFunds,
+        newFund
+    ]);
+    return true;
 }
 
   const filteredFunds = funds.filter((fund) => {
@@ -354,7 +333,9 @@ if (error) {
 
     <Route
         path="/fund/:schemeCode"
-        element={<FundDetails />}
+        element={<FundDetails
+            addFund={addFund}
+        />}
     />
     </Routes>
     </>
