@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 function SearchSection({
   apiSearch,
   setApiSearch,
@@ -20,10 +22,13 @@ function SearchSection({
   buttonStyle,
   selectStyle
 }) {
+
+  const navigate = useNavigate();
+
   return (
     <div>
 
-      
+
            <div
   style={{
      border: "1px solid #ccc",
@@ -125,7 +130,9 @@ function SearchSection({
     <div
 key={fund.schemeCode}
   onClick={() =>
-    addFund(fund.schemeCode)
+     navigate(
+        `/fund/${fund.schemeCode}`
+    )
   }
   style={{
      border: "1px solid #ccc",

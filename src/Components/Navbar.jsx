@@ -1,27 +1,73 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+
+import {
+    navbarStyle,
+    logoStyle,
+    linksContainer,
+    linkStyle,
+    activeLinkStyle
+} from "../styles/navbarStyles";
 
 function Navbar() {
     return (
-        <div
-            style={{
-                display: "flex",
-                gap: "20px",
-                marginBottom: "30px"
-            }}
-        >
-            <Link to="/">Home</Link>
+        <div style={navbarStyle}>
 
-            <Link to="/portfolio">
-                Portfolio
-            </Link>
+            <div style={logoStyle}>
+                ↗ Investo
+            </div>
 
-            <Link to="/compare">
-                Compare
-            </Link>
+            <div style={linksContainer}>
 
-            <Link to="/calculator">
-                Calculator
-            </Link>
+                <NavLink
+                    to="/"
+                    style={({ isActive }) => ({
+                        ...linkStyle,
+                        ...(isActive
+                            ? activeLinkStyle
+                            : {})
+                    })}
+                >
+                    Home
+                </NavLink>
+
+                <NavLink
+                    to="/portfolio"
+                    style={({ isActive }) => ({
+                        ...linkStyle,
+                        ...(isActive
+                            ? activeLinkStyle
+                            : {})
+                    })}
+                >
+                    Portfolio
+                </NavLink>
+
+                <NavLink
+                    to="/compare"
+                    style={({ isActive }) => ({
+                        ...linkStyle,
+                        ...(isActive
+                            ? activeLinkStyle
+                            : {})
+                    })}
+                >
+                    Compare
+                </NavLink>
+
+                <NavLink
+                    to="/calculator"
+                    style={({ isActive }) => ({
+                        ...linkStyle,
+                        ...(isActive
+                            ? activeLinkStyle
+                            : {})
+                    })}
+                >
+                    Calculator
+                </NavLink>
+
+            </div>
+
         </div>
     );
 }

@@ -27,6 +27,7 @@ import Compare from "./pages/Compare";
 import Calculator from "./pages/Calculator";
 
 import Navbar from "./Components/Navbar";
+import FundDetails from "./pages/FundDetails";
 
 // import TestAPI from "./TestAPI";
 // import RealFundsAPI from "./RealFundsAPI";
@@ -186,6 +187,7 @@ async function addFund(schemeCode) {
 
   const fund = await response.json();
   console.log(fund.data);
+
   const newFund = {
     name: fund.meta.scheme_name,
     category: fund.meta.scheme_category,
@@ -286,7 +288,31 @@ if (error) {
     <Navbar />
 
     <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home
+            funds={funds}
+
+            apiSearch={apiSearch}
+            setApiSearch={setApiSearch}
+            searchFunds={searchFunds}
+
+            searchCategory={searchCategory}
+            setSearchCategory={setSearchCategory}
+
+            searchPlan={searchPlan}
+            setSearchPlan={setSearchPlan}
+
+            searchOption={searchOption}
+            setSearchOption={setSearchOption}
+
+            searchResults={searchResults}
+
+            addingFund={addingFund}
+
+            addFund={addFund}
+
+            buttonStyle={buttonStyle}
+            selectStyle={selectStyle}
+        />} />
         <Route path="/calculator" element={<Calculator funds={funds}/>} />
         <Route path="/compare" element={<Compare funds={funds}
 
@@ -325,6 +351,11 @@ if (error) {
 
     }
 />
+
+    <Route
+        path="/fund/:schemeCode"
+        element={<FundDetails />}
+    />
     </Routes>
     </>
   );
