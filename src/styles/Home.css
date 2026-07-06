@@ -7,3 +7,13 @@
     border-color: #00C853;
     box-shadow: 0 12px 30px rgba(0,200,83,0.18);
 }
+
+.summaryCard{
+    transition: all .3s ease;
+}
+
+.summaryCard:hover{
+    transform: translateY(-6px);
+    border-color:#00C853;
+    box-shadow:0 12px 30px rgba(0,200,83,.18);
+}

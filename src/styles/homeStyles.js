@@ -51,52 +51,73 @@ export const heroButton = {
 
 export const summaryContainer = {
     display: "flex",
-    gap: "20px",
     justifyContent: "center",
-    marginBottom: "40px",
-    flexWrap: "wrap"
+    alignItems: "stretch",
+    gap: "30px",
+    flexWrap: "nowrap",
+    margin: "40px auto",
+    maxWidth: "1300px"
 };
 
 export const summaryCard = {
-    backgroundColor: "white",
-    borderRadius: "15px",
-    padding: "25px",
-    width: "250px",
-    boxShadow: "0px 4px 12px rgba(0,0,0,0.15)",
-    textAlign: "center"
+    flex: 1,
+    background: "#111827",
+    border: "1px solid #2B3444",
+    borderRadius: "18px",
+    padding: "35px",
+    minHeight: "150px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
 };
 
 export const cardTitle = {
-    fontSize: "18px",
-    color: "#666"
+    fontSize: "22px",
+    color: "#9CA3AF",
+    marginBottom: "18px"
 };
 
 export const cardValue = {
-    fontSize: "32px",
-    fontWeight: "bold",
-    marginTop: "10px"
+    fontSize: "52px",
+    fontWeight: "700",
+    lineHeight: "1",
+    marginTop: "8px",
+    color: "#00C853"
 };
 
 export const cardSubtitle = {
-    marginTop: "10px",
-    color: "#444"
+    color: "#F3F4F6",
+    textAlign: "center",
+    lineHeight: "1.5",
+    fontSize: "18px",
+    maxWidth: "300px",
+    marginBottom: "15px"
 };
+
 export const guidelineContainer = {
-    marginTop: "50px",
-    padding: "30px",
-    borderRadius: "15px",
-    backgroundColor: "#f5f7fa",
-    boxShadow: "0px 4px 10px rgba(0,0,0,0.1)"
+    background: "#111827",
+border: "1px solid #23314a",
+borderRadius: "20px",
+padding: "40px",
+marginTop: "70px",
+maxWidth: "1100px",
+marginLeft: "auto",
+marginRight: "auto",
+textAlign: "center"
 };
 
 export const guidelineTitle = {
-    textAlign: "center",
-    marginBottom: "20px"
-};
+    color: "#d8d0d0ff",
+    fontSize: "36px",
+    fontWeight: "600",
+    marginBottom: "30px"
+}
 
 export const guidelineText = {
-    fontSize: "17px",
-    marginBottom: "10px"
+    color: "#B8C1CC",
+    fontSize: "19px",
+    lineHeight: "2",
+    margin: "10px 0"
 };
 
 export const featureCard = {

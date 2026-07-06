@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom";
 
+import { FaArrowTrendUp } from "react-icons/fa6";
+import { FiTrendingUp } from "react-icons/fi";
 import {
     navbarStyle,
     logoStyle,
@@ -12,9 +14,35 @@ function Navbar() {
     return (
         <div style={navbarStyle}>
 
-            <div style={logoStyle}>
-                ↗ Investo
-            </div>
+   <NavLink
+    to="/"
+    style={{
+        textDecoration: "none"
+    }}
+>
+    <div
+        style={{
+            ...logoStyle,
+            display: "flex",
+            alignItems: "center",
+            gap: "10px"
+        }}
+    >
+        <FaArrowTrendUp
+            size={30}
+            color="#00C853"
+        />
+
+        <span
+            style={{
+                color: "white",
+                fontWeight: "700"
+            }}
+        >
+            Investo
+        </span>
+    </div>
+</NavLink>
 
             <div style={linksContainer}>
 

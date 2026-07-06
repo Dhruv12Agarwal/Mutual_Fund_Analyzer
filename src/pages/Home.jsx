@@ -3,7 +3,9 @@ import SearchSection from "../Components/SearchSection";
 import {
     FaChartLine,
     FaBalanceScale,
-    FaCompass
+    FaCompass,
+    FaWallet,
+    FaTrophy
 } from "react-icons/fa";
 
 import "../styles/Home.css";
@@ -95,6 +97,13 @@ if (bestFund !== null) {
     bestFundName = bestFund.name;
     bestFundReturn = bestFund.returns1Y;
 }
+
+const shortBestFundName = bestFundName
+    .replace(" - Direct Plan - Growth", "")
+    .replace(" - Regular Plan - Growth", "")
+    .replace(" - Investment Plan", "")
+    .replace(" - Direct Plan", "")
+    .replace(" - Growth", "");
 
     return (
     <div>
@@ -284,7 +293,7 @@ Analyze
 
 <div
 style={{
-marginBottom:"40px",
+// marginBottom:"10px",
 textAlign:"center"
 }}
 >
@@ -294,7 +303,8 @@ style={{
 color:"#00C853",
 fontWeight:"600",
 letterSpacing:"2px",
-fontSize:"16px"
+fontSize:"20px",
+
 }}
 >
 DISCOVER FUNDS
@@ -304,7 +314,7 @@ DISCOVER FUNDS
 
 <p
 style={{
-color:"#888",
+color:"#d7cfcfff",
 fontSize:"20px",
 maxWidth:"750px",
 margin:"0 auto"
@@ -314,6 +324,148 @@ Search from thousands of mutual fund schemes and compare their performance.
 </p>
 
 </div>
+
+    <div style={summaryContainer}>
+
+
+    <div className="summaryCard" style={summaryCard}>
+
+        <div
+            style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "20px"
+            }}
+        >
+
+            <div
+                style={{
+                    width: "75px",
+                    height: "75px",
+                    borderRadius: "50%",
+                    background: "#1F2937",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+            >
+                <FaWallet
+                    size={34}
+                    color="#00C853"
+                />
+            </div>
+
+            <div>
+                <div style={cardTitle}>
+                    Funds Added
+                </div>
+
+                <div style={cardValue}>
+                    {totalFunds}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div className="summaryCard" style={summaryCard}>
+
+        <div
+            style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "20px"
+            }}
+        >
+
+            <div
+                style={{
+                    width: "75px",
+                    height: "75px",
+                    borderRadius: "50%",
+                    background: "#1F2937",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+            >
+                <FaChartLine
+                    size={34}
+                    color="#00C853"
+                />
+            </div>
+
+            <div>
+
+                <div style={cardTitle}>
+                    Average Return
+                </div>
+
+                <div style={cardValue}>
+                    {averageReturn}%
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div className="summaryCard" style={summaryCard}>
+
+        <div
+            style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "20px"
+            }}
+        >
+
+            <div
+                style={{
+                    width: "75px",
+                    height: "75px",
+                    borderRadius: "50%",
+                    background: "#1F2937",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+            >
+                <FaTrophy
+                    size={34}
+                    color="#00C853"
+                />
+            </div>
+
+            <div>
+
+                <div style={cardTitle}>
+                    Best Performer
+                </div>
+
+                <div style={cardSubtitle}>
+                    {shortBestFundName}
+                </div>
+
+                <div style={cardValue}>
+                    {bestFundReturn}%
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 
 <SearchSection
     apiSearch={apiSearch}
@@ -339,65 +491,38 @@ Search from thousands of mutual fund schemes and compare their performance.
     selectStyle={selectStyle}
 />
 
-        <div style={summaryContainer}>
-
-    <div style={summaryCard}>
-        <div style={cardTitle}>
-            Funds Added
-        </div>
-
-        <div style={cardValue}>
-            {totalFunds}
-        </div>
-    </div>
-
-    <div style={summaryCard}>
-        <div style={cardTitle}>
-            Average Return
-        </div>
-
-        <div style={cardValue}>
-            {averageReturn}%
-        </div>
-    </div>
-
-    <div style={summaryCard}>
-        <div style={cardTitle}>
-            Best Performer
-        </div>
-
-        <div style={cardSubtitle}>
-    {bestFundName}
-</div>
-
-<div style={cardValue}>
-    {bestFundReturn}%
-</div>
-    </div>
-
-</div>
-
-
 <div style={guidelineContainer}>
 
-    <h2 style={guidelineTitle}>
-        SEBI Investor Guidelines
-    </h2>
+    <p
+style={{
+    fontSize: "20px",
+    color:"#00C853",
+    letterSpacing:"2px",
+    fontWeight:"600",
+    marginBottom:"8px"
+}}
+>
+IMPORTANT
+</p>
+
+<h2 style={guidelineTitle}>
+   📙 SEBI Investor Guidelines
+</h2>
 
     <p style={guidelineText}>
-        • Mutual fund investments are subject to market risks.
+        ⚠️ Mutual fund investments are subject to market risks.
     </p>
 
     <p style={guidelineText}>
-        • Read all scheme related documents carefully.
+        📄 Read all scheme related documents carefully.
     </p>
 
     <p style={guidelineText}>
-        • Diversify investments across different categories.
+        📊 Diversify investments across different categories.
     </p>
 
     <p style={guidelineText}>
-        • Past performance does not guarantee future returns.
+        📈 Past performance does not guarantee future returns.
     </p>
 
 </div>
