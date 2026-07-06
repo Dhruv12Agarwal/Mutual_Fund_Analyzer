@@ -334,7 +334,9 @@ if (error) {
     <Route
         path="/fund/:schemeCode"
         element={<FundDetails
+            funds={funds}
             addFund={addFund}
+             allSchemes={allSchemes}
         />}
     />
     </Routes>

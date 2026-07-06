@@ -1,3 +1,6 @@
+import calculateCAGR from "../utils/calculateCAGR";
+import calculatePeriodReturn from "../utils/calculatePeriodReturn";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -72,12 +75,42 @@ function NAVChart({ historicalData }) {
   "MAX": historicalData.length
 };
 
+function getPerformance() {
+
+  if (selectedRange === "1M") {
+    return calculatePeriodReturn(historicalData, 22);
+  }
+
+  if (selectedRange === "6M") {
+    return calculatePeriodReturn(historicalData, 125);
+  }
+
+  if (selectedRange === "1Y") {
+    return calculatePeriodReturn(historicalData, 250);
+  }
+
+  if (selectedRange === "3Y") {
+    return calculateCAGR(historicalData, 3);
+  }
+
+  if (selectedRange === "5Y") {
+    return calculateCAGR(historicalData, 5);
+  }
+
+  return calculateCAGR(
+    historicalData,
+    (historicalData.length - 1) / 250
+  );
+}
+
 if (!historicalData) {
   return <h2>No Data</h2>;
 }
 
 const graphData = historicalData.slice(0,rangeDays[selectedRange]);
     const orderedData = [...graphData].reverse();///...copy bna ra hai
+
+    const currentReturn = getPerformance();
 
     const labels = orderedData.map((item) => item.date);
     const values = orderedData.map((item) => parseFloat(item.nav));
@@ -160,15 +193,63 @@ const options = {
     <div
   style={{
     width: "100%",
-    height: "80%"
-    // margin: "20px auto"
+    maxWidth: "1000px",
+    margin: "0 auto",
+    minHeight: "600px"
   }}
 >
   <hr />
+
+ <div
+  style={{
+    marginBottom: "20px",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px"
+  }}
+>
+  <span
+  style={{
+    fontSize: "42px",
+    fontWeight: "bold",
+    color:
+      parseFloat(currentReturn) > 0
+        ? "#00C853"
+        : parseFloat(currentReturn) < 0
+        ? "#FF5252"
+        : "gray"
+  }}
+>
+  {parseFloat(currentReturn) > 0 ? "+" : ""}
+  {currentReturn}%
+</span>
+
+ <span
+  style={{
+    color: "#888",
+    fontSize: "18px",
+    fontWeight: "500"
+  }}
+>
+    {selectedRange === "3Y" ||
+    selectedRange === "5Y" ||
+    selectedRange === "MAX"
+      ? `${selectedRange} annualised`
+      : `${selectedRange} return`}
+  </span>
+</div>
+
+  <div
+  style={{
+    height: "500px"
+  }}
+>
   <Line
     data={data}
     options={options}
   />
+</div>
+<hr />
 
 <div
   style={{

@@ -1,0 +1,9 @@
+.featureCard{
+    transition: all 0.3s ease;
+}
+
+.featureCard:hover{
+    transform: translateY(-8px);
+    border-color: #00C853;
+    box-shadow: 0 12px 30px rgba(0,200,83,0.18);
+}

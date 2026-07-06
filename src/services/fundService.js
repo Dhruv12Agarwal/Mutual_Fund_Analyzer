@@ -48,11 +48,13 @@ export async function getFunds() {
   );
 
   const transformedFunds = fundResponses.map((fund) => ({
+     schemeCode: fund.meta.scheme_code,
     name: fund.meta.scheme_name,
     category: fund.meta.scheme_category,
     risk: getRisk(fund.meta.scheme_category),
     returns1Y: calculateReturn(fund.data),
     historicalData: fund.data
+
   }));
 
   return transformedFunds;

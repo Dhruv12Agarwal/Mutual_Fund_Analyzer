@@ -1,48 +1,54 @@
 export const heroStyle = {
-    background:
-        "linear-gradient(135deg, #1e3c72, #2a5298)",
-    color: "white",
-    padding: "60px",
-    borderRadius: "20px",
+    background: "#111827",
+    border: "1px solid #333",
+    borderRadius: "24px",
+    padding: "90px 40px",
     textAlign: "center",
-    marginBottom: "40px",
-    boxShadow: "0px 8px 20px rgba(0,0,0,0.2)"
+    marginBottom: "70px",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.3)"
 };
 
 export const heroTitle = {
-    fontSize: "48px",
-    marginBottom: "10px"
+    color: "white",
+    fontSize: "68px",
+    fontWeight: "700",
+    marginBottom: "18px"
 };
 
 export const heroSubtitle = {
-    fontSize: "22px",
-    marginBottom: "20px",
-    opacity: "0.9"
+    color: "#00C853",
+    fontSize: "28px",
+    fontWeight: "600",
+    marginTop: "35px",
+    marginBottom: "25px"
 };
 
 export const heroDescription = {
-    fontSize: "18px",
-    maxWidth: "600px",
-    margin: "0 auto 30px auto"
+    color: "#BBBBBB",
+    fontSize: "22px",
+    lineHeight: "1.7",
+    maxWidth: "750px",
+    margin: "0 auto"
 };
 
 export const heroButtonContainer = {
     display: "flex",
     justifyContent: "center",
-    gap: "20px"
+    gap: "20px",
+    marginTop: "45px"
 };
 
 export const heroButton = {
-    padding: "12px 25px",
-    borderRadius: "10px",
-    border: "none",
-    fontSize: "16px",
-    cursor: "pointer",
-    backgroundColor: "white",
-    color: "#1e3c72",
+    padding: "16px 34px",
+    borderRadius: "12px",
     textDecoration: "none",
-    fontWeight: "bold"
+    fontWeight: "600",
+    fontSize: "18px",
+    background: "#00C853",
+    color: "#000",
+    transition: "0.25s"
 };
+
 export const summaryContainer = {
     display: "flex",
     gap: "20px",
@@ -91,4 +97,21 @@ export const guidelineTitle = {
 export const guidelineText = {
     fontSize: "17px",
     marginBottom: "10px"
+};
+
+export const featureCard = {
+    flex: 1,
+    minWidth: "250px",
+    minHeight: "230px",
+    background: "#111827",
+    border: "1px solid #333",
+    borderRadius: "16px",
+    padding: "30px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    transition: "all 0.3s ease",
+    cursor: "pointer"
 };

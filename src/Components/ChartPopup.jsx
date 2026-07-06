@@ -34,7 +34,7 @@ function ChartPopup({
 
           width: "90%",
           maxWidth: "1100px",
-          height: "80vh",
+          height: "80%",
           borderRadius: "12px",
           padding: "25px",
           position: "relative",

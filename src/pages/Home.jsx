@@ -1,5 +1,12 @@
 import { Link } from "react-router-dom";
 import SearchSection from "../Components/SearchSection";
+import {
+    FaChartLine,
+    FaBalanceScale,
+    FaCompass
+} from "react-icons/fa";
+
+import "../styles/Home.css";
 
 import {
     heroStyle,
@@ -18,6 +25,8 @@ import {
     guidelineTitle,
     guidelineText
 } from "../styles/homeStyles";
+
+
 
 function Home({
     funds,
@@ -93,18 +102,19 @@ if (bestFund !== null) {
         <div style={heroStyle}>
 
             <h1 style={heroTitle}>
-                Mutual Fund Analyzer
-            </h1>
+            Mutual Fund Analyzer
+        </h1>
 
-            <h3 style={heroSubtitle}>
-                Analyze • Compare • Plan
-            </h3>
 
-            <p style={heroDescription}>
-                Make smarter investment decisions
-                using data-driven mutual fund analysis.
-            </p>
+        <h3 style={heroSubtitle}>
+            Analyze • Compare • Track Investments
+        </h3>
 
+        <p style={heroDescription}>
+            Make smarter investment decisions using
+            historical NAV trends, risk analytics,
+            portfolio tracking and fund comparison.
+        </p>
             <div style={heroButtonContainer}>
 
                 <Link
@@ -125,15 +135,185 @@ if (bestFund !== null) {
 
         </div>
 
-<h2
-    style={{
-        textAlign: "center",
-        color: "white",
-        marginBottom: "20px"
-    }}
+        <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "25px",
+    margin: "60px 0",
+    flexWrap: "wrap"
+  }}
 >
-    Search & Add Mutual Funds
+
+  <div
+  className="featureCard"
+    style={{
+      flex: 1,
+      minWidth: "250px",
+      background: "#111827",
+      border: "1px solid #333",
+      borderRadius: "16px",
+      padding: "30px",
+      textAlign: "center",
+      display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    }}
+  >
+    <FaChartLine
+    size={42}
+    color="#00C853"
+    style={{
+        marginBottom: "10px"
+    }}
+/>
+    <h2
+style={{
+    marginBottom:"14px",
+    fontSize:"34px",
+    fontWeight:"600"
+}}
+>
+Analyze
 </h2>
+
+    <p style={{
+    color:"#9CA3AF",
+    fontSize:"18px",
+    lineHeight:"1.6",
+    maxWidth:"260px"
+}}>
+      Historical NAV trends,
+      returns and CAGR.
+    </p>
+  </div>
+
+  <div
+  className="featureCard"
+    style={{
+      flex: 1,
+      minWidth: "250px",
+      background: "#111827",
+      border: "1px solid #333",
+      borderRadius: "16px",
+      padding: "30px",
+      textAlign: "center",
+      display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    }}
+  >
+    <FaBalanceScale
+    size={42}
+    color="#00C853"
+    style={{
+        marginBottom: "10px"
+    }}
+/>
+    <h2
+    style={{
+        marginBottom:"14px",
+        fontSize:"34px",
+        fontWeight:"600"
+    }}
+    >
+    Compare
+    </h2>
+
+    <p style={{
+    color:"#9CA3AF",
+    fontSize:"18px",
+    lineHeight:"1.6",
+    maxWidth:"260px"
+}}>
+      Compare multiple
+      mutual funds.
+    </p>
+  </div>
+
+  <div
+  className="featureCard"
+  style={{
+    flex: 1,
+    minWidth: "250px",
+    background: "#111827",
+    border: "1px solid #333",
+    borderRadius: "16px",
+    padding: "30px",
+    textAlign: "center",
+    minHeight: "220px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  }}
+>
+  <FaCompass
+    size={42}
+    color="#00C853"
+    style={{
+        marginBottom: "10px"
+    }}
+/>
+
+  <h2
+    style={{
+      marginBottom: "14px",
+      fontSize: "34px",
+      fontWeight: "600"
+    }}
+  >
+    Discover
+  </h2>
+
+  <p
+    style={{
+    color:"#9CA3AF",
+    fontSize:"18px",
+    lineHeight:"1.6",
+    maxWidth:"260px"
+}}
+  >
+    Search and discover mutual funds.
+  </p>
+</div>
+
+</div>
+
+<div
+style={{
+marginBottom:"40px",
+textAlign:"center"
+}}
+>
+
+<span
+style={{
+color:"#00C853",
+fontWeight:"600",
+letterSpacing:"2px",
+fontSize:"16px"
+}}
+>
+DISCOVER FUNDS
+</span>
+
+
+
+<p
+style={{
+color:"#888",
+fontSize:"20px",
+maxWidth:"750px",
+margin:"0 auto"
+}}
+>
+Search from thousands of mutual fund schemes and compare their performance.
+</p>
+
+</div>
 
 <SearchSection
     apiSearch={apiSearch}

@@ -32,17 +32,16 @@ function SearchSection({
            <div
   style={{
      border: "1px solid #ccc",
-    borderRadius: "10px",
-    padding: "20px",
+    borderRadius: "20px",
+    padding: "30px",
     marginBottom: "30px",
     width: "500px",
     marginLeft: "auto",
     marginRight: "auto",
-   backgroundColor: "#0f0f0fff"
+   backgroundColor: "#0f0f0fff",
+   boxShadow:"0 8px 25px rgba(0,0,0,0.35)"
   }}
 >
-
-<h2>Add Mutual Fund</h2>
 
       <input
   type="text"
@@ -111,7 +110,7 @@ function SearchSection({
     setSearchOption("All");
   }}
 >
-  Reset Search Filters
+  Clear Filters
 </button>
 
 <br />
