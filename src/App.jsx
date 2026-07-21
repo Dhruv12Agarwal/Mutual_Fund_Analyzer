@@ -25,6 +25,7 @@ import Home from "./pages/Home";
 import Portfolio from "./pages/Portfolio";
 import Compare from "./pages/Compare";
 import Calculator from "./pages/Calculator";
+import News from "./pages/News";
 
 import Navbar from "./Components/Navbar";
 import FundDetails from "./pages/FundDetails";
@@ -293,6 +294,7 @@ if (error) {
             selectStyle={selectStyle}
         />} />
         <Route path="/calculator" element={<Calculator funds={funds}/>} />
+        <Route path="/news" element={<News />} />
         <Route path="/compare" element={<Compare funds={funds}
 
             fund1={fund1}

@@ -94,6 +94,18 @@ function Navbar() {
                     Calculator
                 </NavLink>
 
+                <NavLink
+                    to="/news"
+                    style={({ isActive }) => ({
+                        ...linkStyle,
+                        ...(isActive
+                            ? activeLinkStyle
+                            : {})
+                    })}
+                >
+                    News
+                </NavLink>
+
             </div>
 
         </div>
