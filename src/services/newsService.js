@@ -13,13 +13,18 @@ export async function fetchMutualFundNews() {
 }
 
 async function fetchFromNewsAPI(apiKey) {
-  const query = '(mutual fund OR SIP OR SEBI OR NSE OR BSE) AND (India OR Indian)';
+  // NewsAPI.org free tier limitations:
+  // - /v2/everything requires paid plan for country filtering
+  // - Use /v2/top-headlines instead with country=in for free tier
+  
   const sortBy = 'publishedAt';
   const language = 'en';
   const pageSize = 20;
-  const countries = 'in'; // India only
+  const country = 'in'; // India
+  const category = 'business'; // Business news includes mutual funds
   
-  const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&sortBy=${sortBy}&language=${language}&pageSize=${pageSize}&countries=${countries}&apiKey=${apiKey}`;
+  // Using top-headlines endpoint (works with free tier)
+  const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&pageSize=${pageSize}&apiKey=${apiKey}`;
   
   const response = await fetch(url);
   
@@ -44,7 +49,7 @@ async function fetchFromNewsAPI(apiKey) {
   }
   
   if (!data.articles || data.articles.length === 0) {
-    throw new Error('No India-specific mutual fund news found. Please try again later.');
+    throw new Error('No India-specific business news found. Please try again later.');
   }
   
   return transformNewsResponse(data);
