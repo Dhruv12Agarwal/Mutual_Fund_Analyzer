@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
-
+import { useState } from "react";
 import { FaArrowTrendUp } from "react-icons/fa6";
-import { FiTrendingUp } from "react-icons/fi";
+import SearchModal from "./SearchModal";
 import {
     navbarStyle,
     logoStyle,
@@ -11,7 +11,13 @@ import {
 } from "../styles/navbarStyles";
 
 function Navbar() {
+
+const [showSearch, setShowSearch] = useState(false);
+
     return (
+
+        <>
+
         <div style={navbarStyle}>
 
    <NavLink
@@ -38,7 +44,7 @@ function Navbar() {
                 color: "white",
                 fontWeight: "700"
             }}
-        >
+        > 
             Investo
         </span>
     </div>
@@ -47,7 +53,7 @@ function Navbar() {
             <div style={linksContainer}>
 
                 <NavLink
-                    to="/"
+                    to="/" 
                     style={({ isActive }) => ({
                         ...linkStyle,
                         ...(isActive
@@ -94,9 +100,48 @@ function Navbar() {
                     Calculator
                 </NavLink>
 
+                <NavLink
+                to="/news"
+                style={({ isActive }) => ({
+                    ...linkStyle,
+                    ...(isActive
+                        ? activeLinkStyle
+                        : {})
+                })}
+            >
+                News
+            </NavLink>
+
             </div>
 
+            <div
+                onClick={() => setShowSearch(true)}
+                style={{
+                    background: "#111827",
+                    border: "1px solid #333",
+                    borderRadius: "999px",
+        padding: "10px 18px",
+        cursor: "pointer",
+        color: "#9CA3AF",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px"
+    }}
+>
+    🔍 Search
+</div>
+
         </div>
+
+        {
+            showSearch &&
+            <SearchModal
+                setShowSearch={setShowSearch}
+            />
+        }
+
+        </>
+
     );
 }
 

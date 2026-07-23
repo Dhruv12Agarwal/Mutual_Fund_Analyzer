@@ -29,6 +29,8 @@ import Calculator from "./pages/Calculator";
 import Navbar from "./Components/Navbar";
 import FundDetails from "./pages/FundDetails";
 
+import News from "./pages/News";
+
 // import TestAPI from "./TestAPI";
 // import RealFundsAPI from "./RealFundsAPI";
 const MAX_RESULTS_TO_SHOW = 20;
@@ -339,6 +341,12 @@ if (error) {
              allSchemes={allSchemes}
         />}
     />
+
+      <Route
+    path="/news"
+    element={<News />}
+/>
+
     </Routes>
     </>
   );
