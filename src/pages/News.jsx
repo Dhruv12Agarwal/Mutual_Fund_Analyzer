@@ -1,123 +1,86 @@
 import { useEffect, useState } from "react";
-import {
-    getMutualFundNews,
-    getStockNews,
-    getBusinessNews
-} from "../services/newsService";
+import { getNews } from "../services/newsService";
 
 function News() {
 
-
-    const [mutualNews, setMutualNews] = useState([]);
-    const [stockNews, setStockNews] = useState([]);
-    const [businessNews, setBusinessNews] = useState([]);
+    const [news, setNews] = useState([]);
 
     useEffect(() => {
 
-    async function loadNews() {
+        async function loadNews() {
 
-        const [
-        mutual,
-        stock,
-        business
-    ] = await Promise.all([
-        getMutualFundNews(),
-        getStockNews(),
-        getBusinessNews()
-    ]);
+            const data = await getNews();
 
-        setMutualNews(mutual);
-        setStockNews(stock);
-        setBusinessNews(business);
-    }
+            setNews(data);
+        }
 
-    loadNews();
+        loadNews();
 
-}, []);
+    }, []);
 
     return (
         <div
             style={{
-                padding: "40px"
+                padding: "40px",
+                maxWidth: "1000px",
+                margin: "0 auto"
             }}
         >
-            <h1>
-                Market Updates
+            <h1
+                style={{
+                    marginBottom: "40px",
+                    textAlign: "center"
+                }}
+            >
+                Today's Top Headlines
             </h1>
 
-            <>
-    <h2>Mutual Fund News</h2>
+            {
+                news.map((article) => (
 
-    {
-        mutualNews.map((article) => (
-            <div
-                key={article.uuid}
-                style={{
-                    background: "#111827",
-                    padding: "20px",
-                    marginTop: "20px",
-                    borderRadius: "15px"
-                }}
-            >
-                <h2>{article.title}</h2>
+                    <div
+                        key={article.uuid}
+                        style={{
+                            background: "#111827",
+                            padding: "25px",
+                            marginBottom: "25px",
+                            borderRadius: "15px",
+                            border: "1px solid #333"
+                        }}
+                    >
+                        <h2
+                            style={{
+                                marginBottom: "15px"
+                            }}
+                        >
+                            {article.title}
+                        </h2>
 
-                <p>{article.description}</p>
-            </div>
-        ))
-    }
+                        <p
+                            style={{
+                                color: "#9CA3AF",
+                                lineHeight: "1.7"
+                            }}
+                        >
+                            {article.description}
+                        </p>
 
-    <h2
-        style={{
-            marginTop: "50px"
-        }}
-    >
-        Stock Market News
-    </h2>
-
-    {
-        stockNews.map((article) => (
-            <div
-                key={article.uuid}
-                style={{
-                    background: "#111827",
-                    padding: "20px",
-                    marginTop: "20px",
-                    borderRadius: "15px"
-                }}
-            >
-                <h2>{article.title}</h2>
-
-                <p>{article.description}</p>
-            </div>
-        ))
-    }
-
-    <h2
-        style={{
-            marginTop: "50px"
-        }}
-    >
-        Business News
-    </h2>
-
-    {
-        businessNews.map((article) => (
-            <div
-                key={article.uuid}
-                style={{
-                    background: "#111827",
-                    padding: "20px",
-                    marginTop: "20px",
-                    borderRadius: "15px"
-                }}
-            >
-                <h2>{article.title}</h2>
-
-                <p>{article.description}</p>
-            </div>
-        ))
-    }
-</>
+                        <p
+                            style={{
+                                marginTop: "20px",
+                                color: "#00C853",
+                                fontSize: "14px"
+                            }}
+                        >
+                            {
+                                new Date(
+                                    article.published_at
+                                ).toLocaleDateString()
+                            }
+                        </p>
+                    </div>
+                ))
+            }
         </div>
     );
 }

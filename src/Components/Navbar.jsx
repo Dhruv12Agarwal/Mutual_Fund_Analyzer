@@ -10,7 +10,32 @@ import {
     activeLinkStyle
 } from "../styles/navbarStyles";
 
-function Navbar() {
+function Navbar({
+
+    apiSearch,
+    setApiSearch,
+
+    searchFunds,
+
+    searchCategory,
+    setSearchCategory,
+
+    searchPlan,
+    setSearchPlan,
+
+    searchOption,
+    setSearchOption,
+
+    searchResults,
+
+    addingFund,
+
+    addFund,
+
+    buttonStyle,
+    selectStyle
+
+}) {
 
 const [showSearch, setShowSearch] = useState(false);
 
@@ -136,8 +161,31 @@ const [showSearch, setShowSearch] = useState(false);
         {
             showSearch &&
             <SearchModal
-                setShowSearch={setShowSearch}
-            />
+    setShowSearch={setShowSearch}
+
+    apiSearch={apiSearch}
+    setApiSearch={setApiSearch}
+
+    searchFunds={searchFunds}
+
+    searchCategory={searchCategory}
+    setSearchCategory={setSearchCategory}
+
+    searchPlan={searchPlan}
+    setSearchPlan={setSearchPlan}
+
+    searchOption={searchOption}
+    setSearchOption={setSearchOption}
+
+    searchResults={searchResults}
+
+    addingFund={addingFund}
+
+    addFund={addFund}
+
+    buttonStyle={buttonStyle}
+    selectStyle={selectStyle}
+/>
         }
 
         </>

@@ -1,6 +1,31 @@
 import { useEffect } from "react";
+import SearchSection from "./SearchSection";
 
-function SearchModal({ setShowSearch }) {
+function SearchModal({
+    setShowSearch,
+
+    apiSearch,
+    setApiSearch,
+    searchFunds,
+
+    searchCategory,
+    setSearchCategory,
+
+    searchPlan,
+    setSearchPlan,
+
+    searchOption,
+    setSearchOption,
+
+    searchResults,
+
+    addingFund,
+
+    addFund,
+
+    buttonStyle,
+    selectStyle
+}) {
 
     useEffect(() => {
 
@@ -87,19 +112,27 @@ function SearchModal({ setShowSearch }) {
     </button>
 </div>
 
-<input
-    placeholder="Search mutual funds..."
-    style={{
-        width: "100%",
-        marginTop: "30px",
-        padding: "18px",
-        borderRadius: "12px",
-        border: "1px solid #333",
-        background: "#1F2937",
-        color: "white",
-        fontSize: "18px",
-        outline: "none"
-    }}
+<SearchSection
+    apiSearch={apiSearch}
+    setApiSearch={setApiSearch}
+    searchFunds={searchFunds}
+
+    searchCategory={searchCategory}
+    setSearchCategory={setSearchCategory}
+
+    searchPlan={searchPlan}
+    setSearchPlan={setSearchPlan}
+
+    searchOption={searchOption}
+    setSearchOption={setSearchOption}
+
+    searchResults={searchResults}
+
+    addingFund={addingFund}
+    addFund={addFund}
+
+    buttonStyle={buttonStyle}
+    selectStyle={selectStyle}
 />
 </div>
  </div>

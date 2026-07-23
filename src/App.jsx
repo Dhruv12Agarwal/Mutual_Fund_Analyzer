@@ -266,7 +266,30 @@ if (error) {
 
   return (
     <>
-    <Navbar />
+    <Navbar
+    apiSearch={apiSearch}
+    setApiSearch={setApiSearch}
+
+    searchFunds={searchFunds}
+
+    searchCategory={searchCategory}
+    setSearchCategory={setSearchCategory}
+
+    searchPlan={searchPlan}
+    setSearchPlan={setSearchPlan}
+
+    searchOption={searchOption}
+    setSearchOption={setSearchOption}
+
+    searchResults={searchResults}
+
+    addingFund={addingFund}
+
+    addFund={addFund}
+
+    buttonStyle={buttonStyle}
+    selectStyle={selectStyle}
+/>
 
     <Routes>
         <Route path="/" element={<Home

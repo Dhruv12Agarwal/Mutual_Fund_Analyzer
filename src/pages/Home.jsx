@@ -467,29 +467,7 @@ Search from thousands of mutual fund schemes and compare their performance.
 
 
 
-<SearchSection
-    apiSearch={apiSearch}
-    setApiSearch={setApiSearch}
-    searchFunds={searchFunds}
 
-    searchCategory={searchCategory}
-    setSearchCategory={setSearchCategory}
-
-    searchPlan={searchPlan}
-    setSearchPlan={setSearchPlan}
-
-    searchOption={searchOption}
-    setSearchOption={setSearchOption}
-
-    searchResults={searchResults}
-
-    addingFund={addingFund}
-
-    addFund={addFund}
-
-    buttonStyle={buttonStyle}
-    selectStyle={selectStyle}
-/>
 
 <div style={guidelineContainer}>
 
