@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getRisk } from "../utils/getRisk";
 import { calculateReturn } from "../utils/calculateReturn";
+import { calculateInvestorScore, getScoreColor, getScoreRating } from "../utils/calculateInvestorScore";
 import NAVChart from "../Components/NAVChart";
 
 function FundDetails({addFund, funds, allSchemes}) {
@@ -43,6 +44,10 @@ const returns1Y =
     calculateReturn(
         fund.data
     );
+
+const investorScoreData = calculateInvestorScore(fund.data);
+const scoreColor = getScoreColor(investorScoreData.score);
+const scoreRating = getScoreRating(investorScoreData.score);
 
     const lastYearData =
     fund.data.slice(0, 250);
@@ -225,6 +230,12 @@ const finalRecommendations = uniqueFunds.slice(0, 4);
   {
     label: "52W Low",
     value: `₹${low52W.toFixed(2)}`
+  },
+  {
+    label: "Investor Score",
+    value: `${investorScoreData.score}/100`,
+    color: scoreColor,
+    rating: scoreRating
   }
 ];
 
@@ -276,7 +287,6 @@ console.log(funds);
 
         <div
             style={{
-                marginTop: "30px",
                 marginTop: "40px",
                 backgroundColor: "#0d1320ff",
                 border: "1px solid #333",
@@ -324,11 +334,23 @@ console.log(funds);
 
       <h2
   style={{
-    margin: 0
+    margin: 0,
+    color: stat.color || "inherit"
   }}
 >
         {stat.value}
       </h2>
+      {stat.rating && (
+        <p
+          style={{
+            margin: "8px 0 0 0",
+            fontSize: "14px",
+            color: stat.color
+          }}
+        >
+          {stat.rating}
+        </p>
+      )}
     </div>
   ))}
 </div>
@@ -368,6 +390,103 @@ console.log(funds);
 <p>
     {message}
 </p>
+
+<h2
+  style={{
+    marginTop: "50px",
+    marginBottom: "25px",
+    textAlign: "center"
+  }}
+>
+  📈 Performance Breakdown
+</h2>
+
+<div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    gap: "20px",
+    flexWrap: "wrap",
+    marginBottom: "40px"
+  }}
+>
+  <div
+    style={{
+      background: "#111827",
+      padding: "20px",
+      borderRadius: "12px",
+      minWidth: "200px",
+      border: "1px solid #333"
+    }}
+  >
+    <p style={{ color: "#888", marginBottom: "10px" }}>1-Year Return</p>
+    <h3 style={{ margin: 0, color: investorScoreData.breakdown.return1Y >= 0 ? "#00C853" : "#FF5252" }}>
+      {investorScoreData.breakdown.return1Y > 0 ? "+" : ""}{investorScoreData.breakdown.return1Y}%
+    </h3>
+  </div>
+
+  <div
+    style={{
+      background: "#111827",
+      padding: "20px",
+      borderRadius: "12px",
+      minWidth: "200px",
+      border: "1px solid #333"
+    }}
+  >
+    <p style={{ color: "#888", marginBottom: "10px" }}>3-Year CAGR</p>
+    <h3 style={{ margin: 0, color: investorScoreData.breakdown.cagr3Y >= 0 ? "#00C853" : "#FF5252" }}>
+      {investorScoreData.breakdown.cagr3Y > 0 ? "+" : ""}{investorScoreData.breakdown.cagr3Y}%
+    </h3>
+  </div>
+
+  <div
+    style={{
+      background: "#111827",
+      padding: "20px",
+      borderRadius: "12px",
+      minWidth: "200px",
+      border: "1px solid #333"
+    }}
+  >
+    <p style={{ color: "#888", marginBottom: "10px" }}>5-Year CAGR</p>
+    <h3 style={{ margin: 0, color: investorScoreData.breakdown.cagr5Y >= 0 ? "#00C853" : "#FF5252" }}>
+      {investorScoreData.breakdown.cagr5Y > 0 ? "+" : ""}{investorScoreData.breakdown.cagr5Y}%
+    </h3>
+  </div>
+
+  <div
+    style={{
+      background: "#111827",
+      padding: "20px",
+      borderRadius: "12px",
+      minWidth: "200px",
+      border: "1px solid #333"
+    }}
+  >
+    <p style={{ color: "#888", marginBottom: "10px" }}>Volatility</p>
+    <h3 style={{ margin: 0, color: investorScoreData.breakdown.volatility <= 5 ? "#00C853" : investorScoreData.breakdown.volatility <= 10 ? "#FFC107" : "#FF5252" }}>
+      {investorScoreData.breakdown.volatility.toFixed(2)}%
+    </h3>
+    <p style={{ fontSize: "12px", color: "#666", margin: "5px 0 0 0" }}>Lower is Better</p>
+  </div>
+
+  <div
+    style={{
+      background: "#111827",
+      padding: "20px",
+      borderRadius: "12px",
+      minWidth: "200px",
+      border: "1px solid #333"
+    }}
+  >
+    <p style={{ color: "#888", marginBottom: "10px" }}>Consistency</p>
+    <h3 style={{ margin: 0, color: investorScoreData.breakdown.consistency >= 60 ? "#00C853" : investorScoreData.breakdown.consistency >= 50 ? "#FFC107" : "#FF5252" }}>
+      {investorScoreData.breakdown.consistency.toFixed(1)}%
+    </h3>
+    <p style={{ fontSize: "12px", color: "#666", margin: "5px 0 0 0" }}>% Positive Days</p>
+  </div>
+</div>
 
 <h2
   style={{

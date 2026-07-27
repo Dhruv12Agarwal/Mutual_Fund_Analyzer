@@ -1,3 +1,5 @@
+import { getScoreColor, getScoreRating } from "../utils/calculateInvestorScore";
+
 function getRiskColor(risk) {
 
   if (risk === "High") {
@@ -265,6 +267,43 @@ function CompareFunds(props) {
         }}
       >
         {props.selectedFund2.risk}
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td
+        style={{
+          padding: "16px",
+          color: "#E5E7EB",
+          fontWeight: "600",
+          borderBottom: "1px solid #2A2A2A"
+        }}
+      >
+        Investor Score
+      </td>
+
+      <td
+        style={{
+          padding: "16px",
+          color: getScoreColor(props.selectedFund1.investorScore),
+          fontWeight: "bold",
+          borderBottom: "1px solid #2A2A2A"
+        }}
+      >
+        {props.selectedFund1.investorScore}/100 ({getScoreRating(props.selectedFund1.investorScore)})
+      </td>
+
+      <td
+        style={{
+          padding: "16px",
+          color: getScoreColor(props.selectedFund2.investorScore),
+          fontWeight: "bold",
+          borderBottom: "1px solid #2A2A2A"
+        }}
+      >
+        {props.selectedFund2.investorScore}/100 ({getScoreRating(props.selectedFund2.investorScore)})
       </td>
 
     </tr>

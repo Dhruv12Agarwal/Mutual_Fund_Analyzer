@@ -1,4 +1,5 @@
 import NAVChart from "./NAVChart";
+import { getScoreColor, getScoreRating } from "../utils/calculateInvestorScore";
 
 function FundCard(props) {
 function getRiskColor(risk) {
@@ -14,7 +15,10 @@ function getRiskColor(risk) {
   return "green";
 
 }
-console.log("Fund Object:", props.fund);
+
+const scoreColor = getScoreColor(props.fund.investorScore);
+const scoreRating = getScoreRating(props.fund.investorScore);
+
   return (
 
     <div
@@ -52,6 +56,17 @@ console.log("Fund Object:", props.fund);
         }}>
           {" "}{props.fund.risk}
         </span>
+      </p>
+
+      <p
+        style={{
+          fontSize: "18px",
+          fontWeight: "bold",
+          color: scoreColor,
+          marginTop: "10px"
+        }}
+      >
+        📊 Investor Score: {props.fund.investorScore}/100 ({scoreRating})
       </p>
 
       {/* <NAVChart historicalData={props.fund.historicalData} /> */}

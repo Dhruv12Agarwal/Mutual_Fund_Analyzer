@@ -2,6 +2,7 @@ import PortfolioControls from "../Components/PortfolioControls";
 import FundCard from "../Components/FundCard";
 import ChartPopup from "../Components/ChartPopup";
 import NAVChart from "../Components/NAVChart";
+import RiskReturnChart from "../Components/RiskReturnChart";
 
 function Portfolio({
     categories,
@@ -62,6 +63,8 @@ function Portfolio({
                 />
             )}
         </ChartPopup>
+
+        <RiskReturnChart funds={filteredFunds} />
     </div>
 );
 }

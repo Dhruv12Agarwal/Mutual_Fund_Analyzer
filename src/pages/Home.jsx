@@ -28,7 +28,7 @@ import {
     guidelineText
 } from "../styles/homeStyles";
 
-
+import { getScoreColor, getScoreRating } from "../utils/calculateInvestorScore";
 
 function Home({
     funds,
@@ -104,6 +104,39 @@ const shortBestFundName = bestFundName
     .replace(" - Investment Plan", "")
     .replace(" - Direct Plan", "")
     .replace(" - Growth", "");
+
+// Calculate average investor score
+let averageInvestorScore = 0;
+let bestScoringFund = null;
+
+if (funds.length > 0) {
+    let scoreSum = 0;
+    bestScoringFund = funds[0];
+
+    for (let fund of funds) {
+        scoreSum += fund.investorScore || 0;
+        if ((fund.investorScore || 0) > (bestScoringFund.investorScore || 0)) {
+            bestScoringFund = fund;
+        }
+    }
+
+    averageInvestorScore = (
+        scoreSum / funds.length
+    ).toFixed(2);
+}
+
+const bestScoringFundName = bestScoringFund
+    ? bestScoringFund.name
+        .replace(" - Direct Plan - Growth", "")
+        .replace(" - Regular Plan - Growth", "")
+        .replace(" - Investment Plan", "")
+        .replace(" - Direct Plan", "")
+        .replace(" - Growth", "")
+    : "No Funds Added";
+
+const bestScoringFundScore = bestScoringFund
+    ? bestScoringFund.investorScore
+    : "--";
 
     return (
     <div>
@@ -455,6 +488,66 @@ Search from thousands of mutual fund schemes and compare their performance.
 
                 <div style={cardValue}>
                     {bestFundReturn}%
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div className="summaryCard" style={summaryCard}>
+
+        <div
+            style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "20px"
+            }}
+        >
+
+            <div
+                style={{
+                    width: "75px",
+                    height: "75px",
+                    borderRadius: "50%",
+                    background: "#1F2937",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+            >
+                <span
+                    style={{
+                        fontSize: "34px"
+                    }}
+                >
+                    ⭐
+                </span>
+            </div>
+
+            <div>
+
+                <div style={cardTitle}>
+                    Avg Investor Score
+                </div>
+
+                <div
+                    style={{
+                        ...cardSubtitle,
+                        color: getScoreColor(averageInvestorScore)
+                    }}
+                >
+                    {bestScoringFundName}
+                </div>
+
+                <div
+                    style={{
+                        ...cardValue,
+                        color: getScoreColor(bestScoringFundScore)
+                    }}
+                >
+                    {bestScoringFundScore}/100
                 </div>
 
             </div>
