@@ -28,17 +28,17 @@ function ChartPopup({
       }}
     >
       <div
-      onClick={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         style={{
           backgroundColor: "#1e1c1eff",
-
-          width: "90%",
-          maxWidth: "1100px",
-          height: "80%",
+          width: "98%",
+          maxWidth: "1200px",
+          maxHeight: "90vh",
           borderRadius: "12px",
-          padding: "25px",
+          padding: "20px",
           position: "relative",
-          overflow: "auto"
+          overflow: "auto",
+          boxSizing: "border-box"
         }}
       >
 

@@ -1,20 +1,26 @@
-.sip-container{
-    width: 500px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #000000;
-    border: 1px solid #3a3a3a;
-    border-radius: 15px;
-
+.sip-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px 20px;
+  background-color: #000000;
+  border: 1px solid #3a3a3a;
+  border-radius: 15px;
+  box-sizing: border-box;
 }
 
-.sip-input{
-    width: 250px;
-    padding: 10px;
-    margin-top: 8px;
-    border-radius: 6px;
-    border: 1px solid #555;
-    font-size: 15px;
+.sip-input {
+  width: 100%;
+  max-width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #555;
+  font-size: 15px;
+  background-color: #1a1a1a;
+  color: #fff;
+  box-sizing: border-box;
 }
 
 .sip-container label {

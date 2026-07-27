@@ -1,24 +1,12 @@
 import {
   Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
+  ArcElement,
   Tooltip,
-  Legend,
-  ScatterController
+  Legend
 } from "chart.js";
-import { Scatter } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-  ScatterController
-);
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 function RiskReturnChart({ funds }) {
   if (!funds || funds.length === 0) {
@@ -30,82 +18,62 @@ function RiskReturnChart({ funds }) {
           color: "#888"
         }}
       >
-        <p>Add funds to your portfolio to see the Risk vs Return chart</p>
+        <p>Add funds to your portfolio to see the Risk Distribution chart</p>
       </div>
     );
   }
 
-  // Map risk levels to numeric values
-  const riskMap = {
-    "Low": 1,
-    "Medium": 2,
-    "High": 3
+  // Count funds by risk level
+  const riskCounts = {
+    Low: 0,
+    Medium: 0,
+    High: 0
   };
 
-  // Prepare data points
-  const dataPoints = funds.map((fund) => ({
-    x: riskMap[fund.risk] || 2,
-    y: parseFloat(fund.returns1Y) || 0,
-    label: fund.name
-      .replace(" - Direct Plan - Growth", "")
-      .replace(" - Regular Plan - Growth", "")
-      .replace(" - Investment Plan", "")
-      .replace(" - Direct Plan", "")
-      .replace(" - Growth", ""),
-    risk: fund.risk,
-    returns: fund.returns1Y,
-    investo: fund.investorScore
-  }));
-
-  // Calculate average values for reference line
-  const avgReturn =
-    dataPoints.reduce((sum, p) => sum + p.y, 0) / dataPoints.length;
-  const avgRisk =
-    dataPoints.reduce((sum, p) => sum + p.x, 0) / dataPoints.length;
-
-  // Color code by risk level
-  const colors = dataPoints.map((point) => {
-    if (point.risk === "Low") return "#00C853"; // Green
-    if (point.risk === "Medium") return "#FFC107"; // Amber
-    return "#FF5252"; // Red
+  funds.forEach((fund) => {
+    if (fund.risk === "Low") riskCounts.Low++;
+    else if (fund.risk === "Medium") riskCounts.Medium++;
+    else if (fund.risk === "High") riskCounts.High++;
   });
 
+  // Calculate portfolio statistics
+  const totalFunds = funds.length;
+  const avgReturn =
+    funds.reduce((sum, f) => sum + (parseFloat(f.returns1Y) || 0), 0) / totalFunds;
+  const avgScore =
+    funds.reduce((sum, f) => sum + (f.investorScore || 0), 0) / totalFunds;
+
   const data = {
+    labels: [
+      `Low Risk (${riskCounts.Low})`,
+      `Medium Risk (${riskCounts.Medium})`,
+      `High Risk (${riskCounts.High})`
+    ],
     datasets: [
       {
-        label: "Funds",
-        data: dataPoints,
-        backgroundColor: colors,
-        borderColor: colors,
+        data: [riskCounts.Low, riskCounts.Medium, riskCounts.High],
+        backgroundColor: ["#00C853", "#FFC107", "#FF5252"],
+        borderColor: ["#00A835", "#E6A800", "#E63838"],
         borderWidth: 2,
-        pointRadius: 8,
-        pointHoverRadius: 10,
-        tension: 0.1
-      },
-      {
-        label: "Portfolio Average",
-        data: [{ x: avgRisk, y: avgReturn }],
-        backgroundColor: "#00C853",
-        borderColor: "#00C853",
-        borderWidth: 3,
-        pointRadius: 10,
-        pointStyle: "star",
-        showLine: false
+        hoverOffset: 8
       }
     ]
   };
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
     plugins: {
       legend: {
-        display: true,
+        position: "bottom",
         labels: {
           color: "#fff",
           font: {
-            size: 14
-          }
+            size: 14,
+            weight: "500"
+          },
+          padding: 20,
+          usePointStyle: true
         }
       },
       tooltip: {
@@ -116,68 +84,10 @@ function RiskReturnChart({ funds }) {
         borderColor: "#00C853",
         borderWidth: 1,
         callbacks: {
-          title: (context) => {
-            return context[0].raw.label || "Fund";
-          },
           label: (context) => {
-            const point = context.raw;
-            return [
-              `Risk: ${point.risk}`,
-              `Return: ${point.returns}%`,
-              `Investo Score: ${point.investo}/100`
-            ];
-          }
-        }
-      }
-    },
-    scales: {
-      x: {
-        type: "linear",
-        min: 0.5,
-        max: 3.5,
-        ticks: {
-          callback: (value) => {
-            if (value === 1) return "Low Risk";
-            if (value === 2) return "Medium Risk";
-            if (value === 3) return "High Risk";
-            return value;
-          },
-          color: "#888",
-          font: {
-            size: 12
-          }
-        },
-        grid: {
-          color: "rgba(255, 255, 255, 0.1)"
-        },
-        title: {
-          display: true,
-          text: "Risk Level",
-          color: "#fff",
-          font: {
-            size: 14,
-            weight: "bold"
-          }
-        }
-      },
-      y: {
-        ticks: {
-          callback: (value) => `${value}%`,
-          color: "#888",
-          font: {
-            size: 12
-          }
-        },
-        grid: {
-          color: "rgba(255, 255, 255, 0.1)"
-        },
-        title: {
-          display: true,
-          text: "1-Year Return (%)",
-          color: "#fff",
-          font: {
-            size: 14,
-            weight: "bold"
+            const value = context.parsed;
+            const percentage = ((value / totalFunds) * 100).toFixed(1);
+            return `${value} fund${value !== 1 ? "s" : ""} (${percentage}%)`;
           }
         }
       }
@@ -201,35 +111,148 @@ function RiskReturnChart({ funds }) {
         style={{
           textAlign: "center",
           marginTop: 0,
-          marginBottom: "20px",
+          marginBottom: "30px",
           fontSize: "24px",
           fontWeight: "600",
           color: "#fff"
         }}
       >
-        📊 Risk vs Return Analysis
+        📊 Portfolio Risk Distribution
       </h2>
-
-      <p
-        style={{
-          textAlign: "center",
-          color: "#888",
-          fontSize: "14px",
-          marginBottom: "20px"
-        }}
-      >
-        Each dot represents a fund in your portfolio. Higher risk generally correlates with higher returns.
-      </p>
 
       <div
         style={{
-          height: "450px",
-          width: "100%"
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "30px",
+          alignItems: "center"
         }}
       >
-        <Scatter data={data} options={options} />
+        {/* Pie Chart */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "300px",
+              height: "300px"
+            }}
+          >
+            <Pie data={data} options={options} />
+          </div>
+        </div>
+
+        {/* Portfolio Statistics */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "15px"
+          }}
+        >
+          <div
+            style={{
+              padding: "15px",
+              backgroundColor: "#1a1f2e",
+              borderRadius: "8px",
+              border: "1px solid #333"
+            }}
+          >
+            <p
+              style={{
+                margin: "0 0 8px 0",
+                color: "#888",
+                fontSize: "12px",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px"
+              }}
+            >
+              Total Funds
+            </p>
+            <p
+              style={{
+                margin: 0,
+                color: "#00C853",
+                fontSize: "28px",
+                fontWeight: "bold"
+              }}
+            >
+              {totalFunds}
+            </p>
+          </div>
+
+          <div
+            style={{
+              padding: "15px",
+              backgroundColor: "#1a1f2e",
+              borderRadius: "8px",
+              border: "1px solid #333"
+            }}
+          >
+            <p
+              style={{
+                margin: "0 0 8px 0",
+                color: "#888",
+                fontSize: "12px",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px"
+              }}
+            >
+              Avg 1Y Return
+            </p>
+            <p
+              style={{
+                margin: 0,
+                color: "#00C853",
+                fontSize: "28px",
+                fontWeight: "bold"
+              }}
+            >
+              {avgReturn.toFixed(2)}%
+            </p>
+          </div>
+
+          <div
+            style={{
+              padding: "15px",
+              backgroundColor: "#1a1f2e",
+              borderRadius: "8px",
+              border: "1px solid #333"
+            }}
+          >
+            <p
+              style={{
+                margin: "0 0 8px 0",
+                color: "#888",
+                fontSize: "12px",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px"
+              }}
+            >
+              Avg Investo Score
+            </p>
+            <p
+              style={{
+                margin: 0,
+                color: "#00C853",
+                fontSize: "28px",
+                fontWeight: "bold"
+              }}
+            >
+              {avgScore.toFixed(1)}/100
+            </p>
+          </div>
+
+
+        </div>
       </div>
 
+      {/* Key Insights */}
       <div
         style={{
           marginTop: "25px",
@@ -241,72 +264,32 @@ function RiskReturnChart({ funds }) {
       >
         <h3
           style={{
-            margin: "0 0 15px 0",
+            margin: "0 0 12px 0",
             color: "#00C853",
             fontSize: "16px"
           }}
         >
-          Legend
+          Key Insights
         </h3>
-        <div
+        <ul
           style={{
-            display: "flex",
-            gap: "30px",
-            flexWrap: "wrap"
+            margin: 0,
+            paddingLeft: "20px",
+            color: "#ccc",
+            fontSize: "14px",
+            lineHeight: "1.6"
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div
-              style={{
-                width: "16px",
-                height: "16px",
-                borderRadius: "50%",
-                backgroundColor: "#00C853"
-              }}
-            />
-            <span style={{ color: "#fff" }}>Low Risk</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div
-              style={{
-                width: "16px",
-                height: "16px",
-                borderRadius: "50%",
-                backgroundColor: "#FFC107"
-              }}
-            />
-            <span style={{ color: "#fff" }}>Medium Risk</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div
-              style={{
-                width: "16px",
-                height: "16px",
-                borderRadius: "50%",
-                backgroundColor: "#FF5252"
-              }}
-            />
-            <span style={{ color: "#fff" }}>High Risk</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div
-              style={{
-                width: "16px",
-                height: "16px",
-                clip: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)"
-              }}
-              >
-              <div
-                style={{
-                  backgroundColor: "#00C853",
-                  width: "100%",
-                  height: "100%"
-                }}
-              />
-            </div>
-            <span style={{ color: "#fff" }}>Portfolio Average</span>
-          </div>
-        </div>
+          <li>
+            Your portfolio has {riskCounts.Low} low-risk, {riskCounts.Medium} medium-risk, and {riskCounts.High} high-risk funds.
+          </li>
+          <li>
+            Average portfolio return over 1 year is {avgReturn.toFixed(2)}%
+          </li>
+          <li>
+            Overall portfolio Investo Score: {avgScore.toFixed(1)}/100
+          </li>
+        </ul>
       </div>
     </div>
   );

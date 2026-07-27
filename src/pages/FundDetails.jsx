@@ -14,22 +14,47 @@ function FundDetails({addFund, funds, allSchemes}) {
     const [message, setMessage] = useState("");
 
     async function loadFund() {
+        try {
+            const response = await fetch(
+                `https://api.mfapi.in/mf/${schemeCode}`
+            );
 
-        const response = await fetch(
-            `https://api.mfapi.in/mf/${schemeCode}`
-        );
+            if (!response.ok) {
+                throw new Error("Failed to fetch fund data");
+            }
 
-        const data = await response.json();
-
-        setFund(data);
+            const data = await response.json();
+            setFund(data);
+        } catch (error) {
+            console.error("Error loading fund:", error);
+            setMessage("Error loading fund data. Please try again.");
+        }
     }
 
     useEffect(() => {
-        loadFund();
-    }, []);
+        if (schemeCode) {
+            loadFund();
+        }
+    }, [schemeCode]);
 
     if (!fund) {
-        return <h1>Loading...</h1>;
+        return (
+            <div
+                style={{
+                    textAlign: "center",
+                    marginTop: "100px",
+                    padding: "40px"
+                }}
+            >
+                <h1>Loading fund details...</h1>
+                <p style={{ color: "#888" }}>Fetching data from API...</p>
+                {message && (
+                    <p style={{ color: "#FF5252", marginTop: "20px" }}>
+                        {message}
+                    </p>
+                )}
+            </div>
+        );
     }
 
     const currentNAV =
@@ -209,6 +234,8 @@ const finalRecommendations = uniqueFunds.slice(0, 4);
         category: fund.meta.scheme_category,
         risk: risk,
         returns1Y: returns1Y,
+        investorScore: investorScoreData.score,
+        scoreDetails: investorScoreData.breakdown,
         historicalData: fund.data
     };
 

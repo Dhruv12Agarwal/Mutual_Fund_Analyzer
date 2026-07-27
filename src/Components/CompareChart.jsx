@@ -82,7 +82,7 @@ if (!fund1 || !fund2) {
 const graphData1 = fund1.historicalData.slice(0,rangeDays[selectedRange]);
 const graphData2 = fund2.historicalData.slice(0,rangeDays[selectedRange]);
 
-   const orderedData1 = [...graphData1].reverse();
+const orderedData1 = [...graphData1].reverse();
 const orderedData2 = [...graphData2].reverse();///...copy bna ra hai
 
     const labels = orderedData1.map((item) => item.date);//only for x axis dates so no frk ke 1 le ya 2
@@ -157,69 +157,75 @@ const displayValues2 =
 
 const options = {
   responsive: true,
-
-  maintainAspectRatio:false,
+  maintainAspectRatio: false,
 
   interaction: {
-  mode: "nearest",
-  axis: "x",
-  intersect: false
-},
-
-  plugins: {
-
-  legend: {
-    display: true
+    mode: "nearest",
+    axis: "x",
+    intersect: false
   },
 
-  tooltip: {
+  plugins: {
+    legend: {
+      display: true,
+      labels: {
+        padding: 15,
+        font: {
+          size: 13
+        }
+      }
+    },
 
-    callbacks: {
-
-      label: function(context) {
-
-        if (chartType === "Growth") {
+    tooltip: {
+      callbacks: {
+        label: function (context) {
+          if (chartType === "Growth") {
+            return (
+              context.dataset.label +
+              ": " +
+              context.parsed.y.toFixed(2) +
+              "%"
+            );
+          }
 
           return (
             context.dataset.label +
-            ": " +
-            context.parsed.y.toFixed(2) +
-            "%"
+            ": ₹" +
+            context.parsed.y.toFixed(2)
           );
-
         }
-
-        return (
-          context.dataset.label +
-          ": ₹" +
-          context.parsed.y.toFixed(2)
-        );
       }
-    }
-  }
-},
-  scales: {
-  x: {
-    ticks: {
-      maxTicksLimit: 12,
-      maxRotation: 0,
-      minRotation: 0
     }
   },
+  scales: {
+    x: {
+      ticks: {
+        maxTicksLimit: 12,
+        maxRotation: 0,
+        minRotation: 0
+      },
+      grid: {
+        display: true,
+        drawBorder: true
+      }
+    },
 
-  y: {
-    ticks: {
-      callback: function(value) {
+    y: {
+      ticks: {
+        callback: function (value) {
+          if (chartType === "Growth") {
+            return value.toFixed(1) + "%";
+          }
 
-        if (chartType === "Growth") {
-          return value.toFixed(1) + "%";
+          return "₹" + value.toFixed(0);
         }
-
-        return "₹" + value.toFixed(2);
+      },
+      grid: {
+        display: true,
+        drawBorder: true
       }
     }
   }
-}
 };
 
 
@@ -263,105 +269,93 @@ const chartButtonStyle = (type) => ({
 
   return (
     <div
-  style={{
-    width: "100%",
-    height: "80%"
-    // margin: "20px auto"
-  }}
->
-  <hr />
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        gap: "15px"
+      }}
+    >
+      <hr style={{ margin: "10px 0" }} />
 
+      <h3
+        style={{
+          textAlign: "center",
+          marginBottom: "0",
+          marginTop: "0",
+          fontSize: "16px"
+        }}
+      >
+        Compare By
+      </h3>
 
-  <h3
-  style={{
-    textAlign: "center",
-    marginBottom: "15px"
-  }}
->
-  Compare By
-</h3>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "15px"
+        }}
+      >
+        <button
+          style={chartButtonStyle("NAV")}
+          onClick={() => setChartType("NAV")}
+        >
+          NAV
+        </button>
 
-<div
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    gap: "15px",
-    // marginBottom: "20px"
-  }}
->
+        <button
+          style={chartButtonStyle("Growth")}
+          onClick={() => setChartType("Growth")}
+        >
+          Growth %
+        </button>
+      </div>
 
-  <button
-    style={chartButtonStyle("NAV")}
-    onClick={() => setChartType("NAV")}
-  >
-    NAV
-  </button>
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "500px",
+          minHeight: "500px"
+        }}
+      >
+        <Line data={data} options={options} />
+      </div>
 
-  <button
-    style={chartButtonStyle("Growth")}
-    onClick={() => setChartType("Growth")}
-  >
-    Growth %
-  </button>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "10px",
+          marginTop: "0",
+          flexWrap: "wrap"
+        }}
+      >
+        <button style={buttonStyle("1M")} onClick={() => setSelectedRange("1M")}>
+          1M
+        </button>
 
-</div>
+        <button style={buttonStyle("6M")} onClick={() => setSelectedRange("6M")}>
+          6M
+        </button>
 
-<br />
-  <Line
-    data={data}
-    options={options}
-  />
+        <button style={buttonStyle("1Y")} onClick={() => setSelectedRange("1Y")}>
+          1Y
+        </button>
 
-<div
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    gap: "10px",
-    marginTop: "20px"
-  }}
->
+        <button style={buttonStyle("3Y")} onClick={() => setSelectedRange("3Y")}>
+          3Y
+        </button>
 
-  <button
-  style={buttonStyle("1M")}
-  onClick={() => setSelectedRange("1M")}>
-    1M
-  </button>
+        <button style={buttonStyle("5Y")} onClick={() => setSelectedRange("5Y")}>
+          5Y
+        </button>
 
-  <button
-  style={buttonStyle("6M")}
-  onClick={() => setSelectedRange("6M")}>
-    6M
-  </button>
-
-  <button
-  style={buttonStyle("1Y")}
-  onClick={() => setSelectedRange("1Y")}>
-    1Y
-  </button>
-
-  <button
-  style={buttonStyle("3Y")}
-  onClick={() => setSelectedRange("3Y")}>
-    3Y
-  </button>
-
-  <button
-  style={buttonStyle("5Y")}
-  onClick={() => setSelectedRange("5Y")}>
-    5Y
-  </button>
-
-  <button
-  style={buttonStyle("MAX")}
-  onClick={() => setSelectedRange("MAX")}>
-    MAX
-  </button>
-
-</div>
-
-
-
-</div>
+        <button style={buttonStyle("MAX")} onClick={() => setSelectedRange("MAX")}>
+          MAX
+        </button>
+      </div>
+    </div>
   );
 }
 

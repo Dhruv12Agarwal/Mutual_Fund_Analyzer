@@ -23,12 +23,15 @@ function CompareFunds(props) {
         <div
           style={{
             border: "1px solid #333",
-            padding: "25px",
+            padding: "20px",
             margin: "20px auto",
             borderRadius: "12px",
-            width: "750px",
+            width: "100%",
+            maxWidth: "900px",
             backgroundColor: "#161616",
-            boxShadow: "0 0 20px rgba(0,0,0,0.5)"
+            boxShadow: "0 0 20px rgba(0,0,0,0.5)",
+            overflowX: "auto",
+            boxSizing: "border-box"
           }}
         >
 
