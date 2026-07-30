@@ -1,0 +1,171 @@
+MUTUAL FUND ANALYZER - COMPREHENSIVE FEATURE REPORT
+
+================================================================================
+PROJECT OVERVIEW
+================================================================================
+
+The Mutual Fund Analyzer is a comprehensive web-based application designed to help Indian investors make informed decisions about mutual fund investments. Built using modern React technology with real-time data integration from MFAPI.in, the platform offers powerful analytical tools, portfolio management capabilities, and sophisticated comparison features. The application provides access to over 40,000 mutual fund schemes across India, enabling users to analyze historical performance, calculate returns, compare funds side-by-side, and track their investment portfolios. With a user-friendly dark-themed interface and proprietary scoring algorithms, this tool serves both novice investors seeking guidance and experienced investors requiring detailed analytics.
+
+================================================================================
+1. APPLICATION ARCHITECTURE
+================================================================================
+
+The application is built on a robust technical foundation using React 18 with Vite as the build system, ensuring fast development and optimized production builds. React Router v6 handles client-side navigation across six main routes: Home, Portfolio, Compare, Calculator, Fund Details (dynamic routing), and News. The frontend architecture employs a component-based design with reusable UI elements scattered across the Components directory. State management is handled at the application level in App.jsx, maintaining global state for portfolio funds, search results, comparison selections, and UI states. The styling approach uses inline JavaScript style objects with a consistent dark theme (#111827 background) and green accents (#00C853), creating a modern, professional aesthetic. Chart.js with react-chartjs-2 powers all data visualizations, while React Icons provides a comprehensive icon library for UI elements.
+
+================================================================================
+2. NAVIGATION & USER INTERFACE
+================================================================================
+
+The application features a persistent navigation bar that remains fixed at the top of every page, providing consistent access to all major sections. The navbar displays the "Investo" brand logo with a trend-up icon in green, establishing a recognizable brand identity. Navigation links include Home, Portfolio, Compare, Calculator, and News, each with active state highlighting that uses a green background with shadow effects to indicate the current page. A prominent search button with a magnifying glass icon opens the search modal, allowing users to quickly find funds from any page. The overall design language follows a dark theme pattern with carefully chosen colors: dark backgrounds (#111827), subtle borders (#333), and green accents for interactive elements. Cards throughout the application use rounded corners (16px), subtle shadows, and hover effects that include green border glows. The responsive design ensures the interface adapts gracefully to different screen sizes, with flexible grid layouts that adjust column counts based on available width.
+
+[SCREENSHOT PLACEHOLDER: Navigation Bar]
+
+================================================================================
+3. HOME PAGE
+================================================================================
+
+The home page serves as the primary landing interface and central hub for fund discovery. The hero section dominates the upper portion with a large, bold title "Mutual Fund Analyzer" followed by the tagline "Analyze • Compare • Track Investments" and descriptive text explaining the application's core purpose. Two prominent call-to-action buttons, "View Portfolio" and "Compare Funds," provide immediate navigation to key features. Below the hero, three feature cards highlight the main capabilities: Analyze (with chart line icon) for historical NAV trends and returns, Compare (with balance scale icon) for side-by-side fund comparison, and Discover (with compass icon) for searching mutual funds. Each card features a green icon, descriptive text, and hover effects for interactivity. The summary dashboard displays three metric cards showing the total funds added to the portfolio, the average 1-year return across all portfolio funds, and the best-performing fund with its return percentage. An important SEBI Investor Guidelines section provides market risk warnings, document reading reminders, and diversification advice. The page concludes with an integrated search section, allowing users to discover and add funds directly from the home page.
+
+[SCREENSHOT PLACEHOLDER: Home Page Hero Section]
+[SCREENSHOT PLACEHOLDER: Feature Cards]
+[SCREENSHOT PLACEHOLDER: Summary Dashboard]
+
+================================================================================
+4. PORTFOLIO MANAGEMENT
+================================================================================
+
+The portfolio page provides comprehensive fund management capabilities with a responsive grid layout displaying all portfolio funds as interactive cards. Each fund card shows the fund name, category classification, 1-year return percentage, risk level with color coding, investor score with rating, and action buttons for viewing NAV history or removing the fund. The grid automatically adjusts its column count based on screen width, with a minimum card width of 350px ensuring readability. When no funds have been added, a friendly empty state message guides users to search and add funds. A portfolio controls component at the top provides category filter buttons (All, Flexi Cap, Value Fund, Sectoral, Hybrid, Index Funds, Liquid, ETF, Other), sort toggle buttons (Highest Returns or Lowest Returns), and a search input for filtering current portfolio funds. Clicking the "View NAV History" button on any card opens a popup modal with an interactive NAV chart showing historical performance. A risk distribution pie chart visualizes portfolio composition by risk level (Low/Medium/High) with color-coded segments in green, amber, and red. A statistics panel below the chart displays total funds count, average 1-year return, and average investor score, providing quick portfolio insights.
+
+[SCREENSHOT PLACEHOLDER: Portfolio Grid Layout]
+[SCREENSHOT PLACEHOLDER: Empty Portfolio State]
+[SCREENSHOT PLACEHOLDER: Risk Distribution Chart]
+
+================================================================================
+5. FUND COMPARISON
+================================================================================
+
+The compare page enables detailed side-by-side analysis of two mutual funds through an intuitive dual-selector interface. Two dropdown menus at the top allow users to select any two funds from their portfolio for comparison. The selection updates the comparison table in real-time, showing key metrics side-by-side: category, 1-year return, risk level, and investor score. Risk levels are color-coded (red for high, amber for medium, green for low) and investor scores display with appropriate color coding based on rating. A "View Comparison Chart" button opens a modal with an interactive dual-line chart visualizing both funds' performance over time. The comparison chart offers two view modes: NAV mode shows absolute NAV values on the Y-axis, while Growth % mode shows percentage growth from the starting point. Time range buttons (1M, 6M, 1Y, 3Y, 5Y, MAX) allow users to focus on specific periods. The chart uses green for Fund 1 and blue for Fund 2, with a legend displaying fund names. Interactive tooltips show exact values on hover, and a vertical guide line follows the cursor for precise reading. This visualization makes it easy to identify which fund has performed better over different time periods and under various market conditions.
+
+[SCREENSHOT PLACEHOLDER: Fund Selection Dropdowns]
+[SCREENSHOT PLACEHOLDER: Comparison Table]
+[SCREENSHOT PLACEHOLDER: Comparison Chart - NAV View]
+[SCREENSHOT PLACEHOLDER: Comparison Chart - Growth % View]
+
+================================================================================
+6. SIP CALCULATOR
+================================================================================
+
+The calculator page houses a powerful Systematic Investment Plan (SIP) calculator that helps users project potential returns on their monthly investments. The interface presents three input parameters: monthly investment amount (in rupees), investment duration (in years), and expected return source. Users can either enter a custom return rate percentage or select a fund from their portfolio to use its actual 1-year return. When a fund is selected, the calculator displays the fund's category, risk level, and past 1-year return, providing context for the projection. Upon calculation, three results are displayed: Total Investment (the sum of all monthly investments over the period), Estimated Returns (the profit earned), and Total Maturity Value (principal plus returns). A pie chart visualization breaks down the final amount into two segments: blue for the investment amount (principal) and green for the returns earned (profit), with percentage labels and interactive tooltips showing exact rupee values. The calculator uses the standard SIP compound interest formula: M = P × [{(1+r)^n - 1} / r] × (1+r), where M is the maturity amount, P is monthly investment, r is monthly interest rate, and n is the number of months. This tool helps investors understand the power of compounding and plan their investment strategies effectively.
+
+[SCREENSHOT PLACEHOLDER: SIP Calculator Input Section]
+[SCREENSHOT PLACEHOLDER: SIP Calculator Results]
+[SCREENSHOT PLACEHOLDER: SIP Pie Chart]
+
+================================================================================
+7. FUND DETAILS PAGE
+================================================================================
+
+The fund details page provides comprehensive information about an individual mutual fund, accessible by clicking on any fund name throughout the application. The page dynamically loads live data from MFAPI.in using the fund's unique scheme code. At the top, the fund name is displayed in large, bold typography (64px font) with the fund house and scheme category shown in smaller text below. A full-width interactive NAV chart dominates the upper section, with time range buttons (1M, 6M, 1Y, 3Y, 5Y, MAX) allowing users to explore different periods. The chart displays performance percentage prominently, color-coded green for gains and red for losses. Below the chart, five statistics cards present key metrics: current NAV value, risk level (color-coded), 52-week high, 52-week low, and investor score with rating label. A detailed performance breakdown section shows the individual components of the investor score: 1-year return, 3-year CAGR, 5-year CAGR, volatility percentage (lower is better), and consistency percentage (positive trading days). An "Add to Portfolio" button allows one-click addition with duplicate detection and success/error feedback. At the bottom, an algorithm recommends up to four similar funds from different AMCs, calculated using weighted scoring based on category and fund house similarities. Each recommendation is clickable, navigating to that fund's detail page.
+
+[SCREENSHOT PLACEHOLDER: Fund Details Header]
+[SCREENSHOT PLACEHOLDER: Fund Details NAV Chart]
+[SCREENSHOT PLACEHOLDER: Fund Details Statistics Cards]
+[SCREENSHOT PLACEHOLDER: Performance Breakdown Section]
+
+================================================================================
+8. NEWS FEED
+================================================================================
+
+The news page provides a curated feed of financial news relevant to Indian markets, keeping investors informed about market trends and developments. The page integrates with the Marketaux API to fetch the top 10 India-focused financial news articles. A centered layout with ample padding presents a "Today's Top Headlines" title at the top. News articles are displayed as individual cards with dark backgrounds (#111827), rounded corners (15px), and subtle borders (#333). Each card shows the article title in a prominent heading, followed by a description summarizing the content, and the publication date in a smaller font. The vertical stacking of cards with consistent spacing creates an easy-to-scan reading experience. The responsive design ensures cards adapt to different screen widths while maintaining a maximum width of 1000px for optimal readability. This feature helps users stay updated with market-moving news without leaving the application, supporting informed investment decisions. The news feed updates each time the page is visited, ensuring current information is always available.
+
+[SCREENSHOT PLACEHOLDER: News Page Header]
+[SCREENSHOT PLACEHOLDER: News Card Example]
+
+================================================================================
+9. SEARCH & DISCOVERY
+================================================================================
+
+The search functionality is a cornerstone feature, providing access to over 40,000 Indian mutual fund schemes through an intuitive interface. Accessible via the search button in the navigation bar, the search modal opens as a full-screen overlay with a centered content container (max-width 900px). The search input supports real-time searching as users type, with results updating dynamically. Advanced filters allow refinement by category (All, Flexi Cap, Liquid, Hybrid, Index, ETF, Sectoral), plan type (All, Direct, Regular), and option type (All, Growth, IDCW). These filters help narrow down results to specific fund types. Search results display up to 20 matching schemes as clickable cards with hover effects (green border glow). A relevance scoring algorithm sorts results based on word-by-word matching between the query and fund names, ensuring the most relevant results appear first. Clicking any result navigates to that fund's detail page for comprehensive information. The modal can be closed by pressing ESC, clicking outside the content area, or clicking the close button. A "Clear Filters" button resets all filters to default. This powerful search capability enables users to discover new investment opportunities and find specific funds quickly and efficiently.
+
+[SCREENSHOT PLACEHOLDER: Search Modal Open]
+[SCREENSHOT PLACEHOLDER: Search Filters]
+[SCREENSHOT PLACEHOLDER: Search Results Display]
+
+================================================================================
+10. INVESTOR SCORE SYSTEM
+================================================================================
+
+The investor score is a proprietary comprehensive rating system that evaluates mutual fund performance on a 0-100 scale using a sophisticated five-factor analysis. The scoring methodology allocates 100 points across five metrics: 1-Year Return (25 points) measures recent performance with a range of -50% to +50%, 3-Year CAGR (25 points) assesses medium-term consistency with a range of -20% to +40%, 5-Year CAGR (25 points) evaluates long-term growth trajectory over the same range, Volatility (15 points) rewards stability by penalizing higher standard deviation of daily returns, and Consistency (10 points) measures the percentage of trading days with positive returns over the last 12 months. Each metric is normalized to its point allocation, with specific scoring formulas ensuring fair comparison across different fund types. The final score maps to six ratings: Excellent (85-100, green #00C853), Very Good (70-84, light green #4CAF50), Good (55-69, lime #8BC34A), Average (40-54, amber #FFC107), Below Average (25-39, orange #FF9800), and Poor (0-24, red #F44336). The investor score appears throughout the application: on fund cards in the portfolio, in the comparison table, and prominently on the fund details page with a full performance breakdown. This scoring system provides investors with a quick, reliable metric to assess fund quality without needing to analyze complex data manually.
+
+[SCREENSHOT PLACEHOLDER: Investor Score Display Examples]
+[SCREENSHOT PLACEHOLDER: Investor Score on Fund Card]
+[SCREENSHOT PLACEHOLDER: Investor Score on Fund Details]
+
+================================================================================
+11. DATA VISUALIZATION
+================================================================================
+
+The application employs four distinct chart types to present financial data in accessible, interactive formats. The NAV Historical Chart (NAVChart component) visualizes fund performance over time as a smooth line chart with time range selection buttons (1M, 6M, 1Y, 3Y, 5Y, MAX). A vertical guide line follows the cursor on hover, and performance percentage is prominently displayed with color coding (green for gains, red for losses). The Comparison Chart (CompareChart component) displays two funds simultaneously as overlaid lines in green and blue, with options to view absolute NAV values or percentage growth from the starting point. Time range buttons and interactive tooltips provide detailed comparisons across periods. The Risk Distribution Pie Chart (RiskReturnChart component) shows portfolio composition by risk level with three color-coded segments: green for low risk, amber for medium risk, and red for high risk. Interactive tooltips display fund counts and percentages, while an adjacent statistics panel shows total funds, average return, and average investor score. The SIP Investment Pie Chart (SIPPieChart component) breaks down investment projections into two segments: blue for the principal investment amount and green for estimated returns. Percentage labels and tooltips with rupee values provide clarity. All charts are built using Chart.js with react-chartjs-2, featuring custom plugins for hover interactions, responsive sizing, and dark theme styling with smooth line curves.
+
+[SCREENSHOT PLACEHOLDER: NAV Chart Example]
+[SCREENSHOT PLACEHOLDER: Comparison Chart Example]
+[SCREENSHOT PLACEHOLDER: Risk Distribution Chart]
+[SCREENSHOT PLACEHOLDER: SIP Pie Chart Example]
+
+================================================================================
+12. API INTEGRATIONS
+================================================================================
+
+The application integrates with two primary APIs to deliver real-time data and news content. MFAPI.in, a free and open API for Indian mutual fund data, provides access to over 40,000 schemes without requiring authentication. The "Get All Schemes" endpoint (https://api.mfapi.in/mf) returns a complete list of mutual fund schemes with scheme codes and names, which the application caches for search functionality. The "Get Fund Details" endpoint (https://api.mfapi.in/mf/{schemeCode}) retrieves comprehensive information for a specific fund, including metadata (scheme name, fund house, category) and historical NAV data (date and NAV values). The application transforms this raw data into a standardized format, calculating derived metrics like risk level, 1-year return, and investor score on the fly. Marketaux API provides the financial news feed, requiring an API key stored as an environment variable (VITE_NEWS_API_KEY). The endpoint fetches the top 10 India-focused financial news articles with title, description, and publication date. Error handling wraps all API calls with try-catch blocks, displaying user-friendly error messages and loading states during data fetching. This dual-API approach ensures the application provides both comprehensive fund data and relevant market news, creating a complete investment research platform.
+
+================================================================================
+13. TECHNICAL IMPLEMENTATION
+================================================================================
+
+The project follows a well-organized directory structure separating concerns across components, pages, services, utilities, and styles. The main App.jsx serves as the application root, handling routing setup and global state management including portfolio funds, search results, and comparison selections. Thirteen reusable components in the Components directory handle specific UI elements like fund cards, charts, modals, and navigation. Six page components in the pages directory represent the main routes, each managing its local state for user interactions. Two service modules (fundService.js and newsService.js) encapsulate API logic, providing clean functions for data fetching. Six utility modules implement core calculations: calculateCAGR.js for compound annual growth rate, calculateInvestorScore.js for the proprietary scoring system, calculateReturn.js for simple returns, calculatePeriodReturn.js for specific time periods, calculateScore.js for search relevance, and getRisk.js for risk classification from categories. Styling uses a combination of inline JavaScript style objects in separate style files (homeStyles.js, navbarStyles.js, styles.js) and CSS files (Home.css, App.css, index.css), maintaining consistency with the dark theme. Performance optimizations include Promise.all for parallel API calls, efficient filtering algorithms, and responsive grid layouts with CSS. The build system uses Vite for fast development iteration and optimized production builds, with ESLint maintaining code quality throughout development.
+
+================================================================================
+CONCLUSION
+================================================================================
+
+The Mutual Fund Analyzer represents a comprehensive solution for Indian mutual fund investors, combining real-time data access, sophisticated analytics, and intuitive design. The proprietary Investor Score system provides a unique, multi-factor evaluation method that simplifies fund assessment without requiring deep financial expertise. With access to over 40,000 schemes, interactive visualizations, portfolio management tools, and a SIP calculator, the application serves both novice investors seeking guidance and experienced investors requiring detailed analysis. The dark-themed interface with green accents creates a professional, modern aesthetic while ensuring readability during extended use. Integration with MFAPI.in and Marketaux APIs ensures users have access to current fund data and relevant market news. The component-based architecture and clean code organization facilitate maintenance and future enhancements. Overall, this application provides a valuable tool for making informed investment decisions in the Indian mutual fund market.
+
+================================================================================
+KEY STRENGTHS
+================================================================================
+
+1. Comprehensive Data Access: Integration with MFAPI.in provides access to 40,000+ Indian mutual fund schemes with real-time NAV data.
+
+2. Proprietary Scoring System: The Investor Score offers a unique, multi-factor evaluation method (25+25+25+15+10 points) that simplifies fund assessment.
+
+3. Interactive Visualizations: Four chart types with time range selection, comparison capabilities, and hover interactions provide deep insights into fund performance.
+
+4. User-Friendly Design: Dark theme with intuitive navigation, clear information hierarchy, and responsive layouts ensures accessibility across devices.
+
+5. Practical Tools: SIP calculator, portfolio management, fund comparison, and search functionality address real investor needs.
+
+================================================================================
+USE CASES
+================================================================================
+
+- Portfolio Tracking: Monitor and analyze investment holdings with real-time data and performance metrics.
+
+- Fund Discovery: Search and discover new investment opportunities from over 40,000 available schemes.
+
+- Comparative Analysis: Compare funds side-by-side using multiple metrics and interactive charts.
+
+- Investment Planning: Use the SIP calculator to project potential returns and understand compounding effects.
+
+- Performance Monitoring: Track fund performance through historical data and investor scores.
+
+================================================================================
+TECHNOLOGIES USED
+================================================================================
+
+Frontend Framework: React 18 with Vite
+Routing: React Router v6
+Data Visualization: Chart.js with react-chartjs-2
+Icons: React Icons
+APIs: MFAPI.in (mutual fund data), Marketaux (financial news)
+Styling: Inline CSS with JavaScript style objects
+

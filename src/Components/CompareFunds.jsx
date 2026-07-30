@@ -1,4 +1,6 @@
-import { getScoreColor, getScoreRating } from "../utils/calculateInvestorScore";
+import { getScoreColorV2, getScoreRatingV2 } from "../utils/calculateInvestorScoreV2";
+import { calculateXIRR } from "../utils/calculateXIRR";
+import { calculateSharpe, calculateSimpleBeta } from "../utils/financialMetrics";
 
 function getRiskColor(risk) {
 
@@ -215,7 +217,7 @@ function CompareFunds(props) {
           borderBottom: "1px solid #2A2A2A"
         }}
       >
-        1Y Return
+        XIRR (1Y)
       </td>
 
       <td
@@ -225,7 +227,7 @@ function CompareFunds(props) {
           borderBottom: "1px solid #2A2A2A"
         }}
       >
-        {props.selectedFund1.returns1Y}%
+        {calculateXIRR(props.selectedFund1.historicalData, 10000) ?? "N/A"}%
       </td>
 
       <td
@@ -235,7 +237,7 @@ function CompareFunds(props) {
           borderBottom: "1px solid #2A2A2A"
         }}
       >
-        {props.selectedFund2.returns1Y}%
+        {calculateXIRR(props.selectedFund2.historicalData, 10000) ?? "N/A"}%
       </td>
 
     </tr>
@@ -290,23 +292,93 @@ function CompareFunds(props) {
       <td
         style={{
           padding: "16px",
-          color: getScoreColor(props.selectedFund1.investorScore),
+          color: getScoreColorV2(props.selectedFund1.investorScore),
           fontWeight: "bold",
           borderBottom: "1px solid #2A2A2A"
         }}
       >
-        {props.selectedFund1.investorScore}/100 ({getScoreRating(props.selectedFund1.investorScore)})
+        {props.selectedFund1.investorScore}/100 ({getScoreRatingV2(props.selectedFund1.investorScore)})
       </td>
 
       <td
         style={{
           padding: "16px",
-          color: getScoreColor(props.selectedFund2.investorScore),
+          color: getScoreColorV2(props.selectedFund2.investorScore),
           fontWeight: "bold",
           borderBottom: "1px solid #2A2A2A"
         }}
       >
-        {props.selectedFund2.investorScore}/100 ({getScoreRating(props.selectedFund2.investorScore)})
+        {props.selectedFund2.investorScore}/100 ({getScoreRatingV2(props.selectedFund2.investorScore)})
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td
+        style={{
+          padding: "16px",
+          color: "#E5E7EB",
+          fontWeight: "600",
+          borderBottom: "1px solid #2A2A2A"
+        }}
+      >
+        Sharpe Ratio
+      </td>
+
+      <td
+        style={{
+          padding: "16px",
+          color: "#B8BDC9",
+          borderBottom: "1px solid #2A2A2A"
+        }}
+      >
+        {calculateSharpe(props.selectedFund1.historicalData) ? parseFloat(calculateSharpe(props.selectedFund1.historicalData).toFixed(2)) : "N/A"}
+      </td>
+
+      <td
+        style={{
+          padding: "16px",
+          color: "#B8BDC9",
+          borderBottom: "1px solid #2A2A2A"
+        }}
+      >
+        {calculateSharpe(props.selectedFund2.historicalData) ? parseFloat(calculateSharpe(props.selectedFund2.historicalData).toFixed(2)) : "N/A"}
+      </td>
+
+    </tr>
+
+    <tr>
+
+      <td
+        style={{
+          padding: "16px",
+          color: "#E5E7EB",
+          fontWeight: "600",
+          borderBottom: "1px solid #2A2A2A"
+        }}
+      >
+        Beta
+      </td>
+
+      <td
+        style={{
+          padding: "16px",
+          color: "#B8BDC9",
+          borderBottom: "1px solid #2A2A2A"
+        }}
+      >
+        {calculateSimpleBeta(props.selectedFund1.historicalData, props.selectedFund1.category) ?? "N/A"}
+      </td>
+
+      <td
+        style={{
+          padding: "16px",
+          color: "#B8BDC9",
+          borderBottom: "1px solid #2A2A2A"
+        }}
+      >
+        {calculateSimpleBeta(props.selectedFund2.historicalData, props.selectedFund2.category) ?? "N/A"}
       </td>
 
     </tr>

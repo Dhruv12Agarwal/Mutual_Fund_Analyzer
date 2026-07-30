@@ -1,6 +1,6 @@
 import { getRisk } from "../utils/getRisk";
 import { calculateReturn } from "../utils/calculateReturn";
-import { calculateInvestorScore } from "../utils/calculateInvestorScore";
+import { calculateInvestorScoreV2 } from "../utils/calculateInvestorScoreV2";
 
 export async function getAllSchemes() {
   const response = await fetch(
@@ -49,7 +49,7 @@ export async function getFunds() {
   );
 
   const transformedFunds = fundResponses.map((fund) => {
-    const investorScore = calculateInvestorScore(fund.data);
+    const investorScore = calculateInvestorScoreV2(fund.data, fund.meta.scheme_category);
     
     return {
       schemeCode: fund.meta.scheme_code,

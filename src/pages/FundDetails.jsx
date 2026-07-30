@@ -2,7 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getRisk } from "../utils/getRisk";
 import { calculateReturn } from "../utils/calculateReturn";
-import { calculateInvestorScore, getScoreColor, getScoreRating } from "../utils/calculateInvestorScore";
+import { calculateInvestorScoreV2, getScoreColorV2, getScoreRatingV2 } from "../utils/calculateInvestorScoreV2";
+import { calculateSharpe, calculateBeta, calculateTreynor } from "../utils/financialMetrics";
 import NAVChart from "../Components/NAVChart";
 
 function FundDetails({addFund, funds, allSchemes}) {
@@ -12,6 +13,9 @@ function FundDetails({addFund, funds, allSchemes}) {
 
     const [fund, setFund] = useState(null);
     const [message, setMessage] = useState("");
+    const [sharpe, setSharpe] = useState(NaN);
+    const [beta, setBeta] = useState(NaN);
+    const [treynor, setTreynor] = useState(NaN);
 
     async function loadFund() {
         try {
@@ -36,6 +40,58 @@ function FundDetails({addFund, funds, allSchemes}) {
             loadFund();
         }
     }, [schemeCode]);
+
+    useEffect(() => {
+      async function computeMetrics() {
+        if (!fund) return;
+        const riskFreeRate = parseFloat(import.meta.env.VITE_RISK_FREE_RATE || "0.06");
+
+        try {
+          const s = calculateSharpe(fund.data, riskFreeRate);
+          setSharpe(s);
+        } catch {
+          setSharpe(NaN);
+        }
+
+        // find benchmark from allSchemes (prefer nifty/sensex/index)
+        let benchScheme = null;
+        if (Array.isArray(allSchemes)) {
+          const lower = allSchemes.map(s => ({ ...s, nameLower: (s.schemeName || "").toLowerCase() }));
+          benchScheme = lower.find(s => s.nameLower.includes("nifty")) || lower.find(s => s.nameLower.includes("sensex")) || lower.find(s => s.nameLower.includes("index"));
+        }
+
+        if (benchScheme && benchScheme.schemeCode) {
+          try {
+            const res = await fetch(`https://api.mfapi.in/mf/${benchScheme.schemeCode}`);
+            if (res.ok) {
+              const json = await res.json();
+              const benchData = json.data;
+              try {
+                const b = calculateBeta(fund.data, benchData);
+                setBeta(b);
+              } catch {
+                setBeta(NaN);
+              }
+
+              try {
+                const t = calculateTreynor(fund.data, benchData, riskFreeRate);
+                setTreynor(t);
+              } catch {
+                setTreynor(NaN);
+              }
+            }
+          } catch {
+            setBeta(NaN);
+            setTreynor(NaN);
+          }
+        } else {
+          setBeta(NaN);
+          setTreynor(NaN);
+        }
+      }
+
+      computeMetrics();
+    }, [fund, allSchemes]);
 
     if (!fund) {
         return (
@@ -70,9 +126,9 @@ const returns1Y =
         fund.data
     );
 
-const investorScoreData = calculateInvestorScore(fund.data);
-const scoreColor = getScoreColor(investorScoreData.score);
-const scoreRating = getScoreRating(investorScoreData.score);
+const investorScoreData = calculateInvestorScoreV2(fund.data, fund.meta.scheme_category);
+const scoreColor = getScoreColorV2(investorScoreData.score);
+const scoreRating = getScoreRatingV2(investorScoreData.score);
 
     const lastYearData =
     fund.data.slice(0, 250);
@@ -266,6 +322,25 @@ const finalRecommendations = uniqueFunds.slice(0, 4);
   }
 ];
 
+// Append financial metrics
+stats.push({
+  label: "Sharpe Ratio",
+  value: isFinite(sharpe) ? sharpe.toFixed(2) : "N/A",
+  color: isFinite(sharpe) ? (sharpe >= 1 ? "#00C853" : sharpe >= 0.5 ? "#FFC107" : "#FF5252") : undefined
+});
+
+stats.push({
+  label: "Beta",
+  value: isFinite(beta) ? beta.toFixed(2) : "N/A",
+  color: isFinite(beta) ? (Math.abs(beta) <= 1 ? "#00C853" : "#FFC107") : undefined
+});
+
+stats.push({
+  label: "Treynor Ratio",
+  value: isFinite(treynor) ? treynor.toFixed(2) : "N/A",
+  color: isFinite(treynor) ? (treynor >= 0.1 ? "#00C853" : treynor >= 0 ? "#FFC107" : "#FF5252") : undefined
+});
+
 
 console.log(funds);
 
@@ -425,8 +500,14 @@ console.log(funds);
     textAlign: "center"
   }}
 >
-  📈 Performance Breakdown
+  📊 Investor Score Breakdown (V2)
 </h2>
+
+<div style={{ marginBottom: "40px", padding: "20px", backgroundColor: "#111827", borderRadius: "12px", border: "1px solid #333" }}>
+  <p style={{ color: "#888", marginBottom: "15px", textAlign: "center", fontSize: "14px" }}>
+    New methodology: 35% Sharpe Ratio • 20% Long-term CAGR • 15% Alpha • 10% Consistency • 10% Expense Ratio • 5% Max Drawdown • 5% Benchmark Performance
+  </p>
+</div>
 
 <div
   style={{
@@ -437,81 +518,158 @@ console.log(funds);
     marginBottom: "40px"
   }}
 >
+  {/* Sharpe Ratio - 35% */}
   <div
     style={{
       background: "#111827",
       padding: "20px",
       borderRadius: "12px",
-      minWidth: "200px",
+      minWidth: "220px",
       border: "1px solid #333"
     }}
   >
-    <p style={{ color: "#888", marginBottom: "10px" }}>1-Year Return</p>
-    <h3 style={{ margin: 0, color: investorScoreData.breakdown.return1Y >= 0 ? "#00C853" : "#FF5252" }}>
-      {investorScoreData.breakdown.return1Y > 0 ? "+" : ""}{investorScoreData.breakdown.return1Y}%
+    <p style={{ color: "#888", marginBottom: "8px", fontSize: "12px" }}>Sharpe Ratio (35%)</p>
+    <h3 style={{ margin: "0 0 8px 0", color: investorScoreData.breakdown.sharpeRatio ? investorScoreData.breakdown.sharpeRatio.value >= 1 ? "#00C853" : investorScoreData.breakdown.sharpeRatio.value >= 0.5 ? "#FFC107" : "#FF5252" : "#888" }}>
+      {investorScoreData.breakdown.sharpeRatio?.value?.toFixed(2) || "N/A"}
     </h3>
+    <p style={{ fontSize: "12px", color: "#666", margin: "0", maxWidth: "200px" }}>
+      {investorScoreData.breakdown.sharpeRatio?.description}
+    </p>
+    <p style={{ fontSize: "11px", color: "#555", marginTop: "8px" }}>
+      Score: {investorScoreData.breakdown.sharpeRatio?.score.toFixed(2)}/{investorScoreData.breakdown.sharpeRatio?.maxPoints}
+    </p>
   </div>
 
+  {/* Long-term CAGR - 20% */}
   <div
     style={{
       background: "#111827",
       padding: "20px",
       borderRadius: "12px",
-      minWidth: "200px",
+      minWidth: "220px",
       border: "1px solid #333"
     }}
   >
-    <p style={{ color: "#888", marginBottom: "10px" }}>3-Year CAGR</p>
-    <h3 style={{ margin: 0, color: investorScoreData.breakdown.cagr3Y >= 0 ? "#00C853" : "#FF5252" }}>
-      {investorScoreData.breakdown.cagr3Y > 0 ? "+" : ""}{investorScoreData.breakdown.cagr3Y}%
+    <p style={{ color: "#888", marginBottom: "8px", fontSize: "12px" }}>CAGR {investorScoreData.breakdown.cagr5Y?.period} (20%)</p>
+    <h3 style={{ margin: "0 0 8px 0", color: investorScoreData.breakdown.cagr5Y?.value >= 0 ? "#00C853" : "#FF5252" }}>
+      {investorScoreData.breakdown.cagr5Y?.value > 0 ? "+" : ""}{investorScoreData.breakdown.cagr5Y?.value?.toFixed(2) || "N/A"}%
     </h3>
+    <p style={{ fontSize: "12px", color: "#666", margin: "0" }}>
+      {investorScoreData.breakdown.cagr5Y?.description}
+    </p>
+    <p style={{ fontSize: "11px", color: "#555", marginTop: "8px" }}>
+      Score: {investorScoreData.breakdown.cagr5Y?.score.toFixed(2)}/{investorScoreData.breakdown.cagr5Y?.maxPoints}
+    </p>
   </div>
 
+  {/* Alpha - 15% */}
   <div
     style={{
       background: "#111827",
       padding: "20px",
       borderRadius: "12px",
-      minWidth: "200px",
+      minWidth: "220px",
       border: "1px solid #333"
     }}
   >
-    <p style={{ color: "#888", marginBottom: "10px" }}>5-Year CAGR</p>
-    <h3 style={{ margin: 0, color: investorScoreData.breakdown.cagr5Y >= 0 ? "#00C853" : "#FF5252" }}>
-      {investorScoreData.breakdown.cagr5Y > 0 ? "+" : ""}{investorScoreData.breakdown.cagr5Y}%
+    <p style={{ color: "#888", marginBottom: "8px", fontSize: "12px" }}>Alpha (15%)</p>
+    <h3 style={{ margin: "0 0 8px 0", color: investorScoreData.breakdown.alpha?.value >= 0 ? "#00C853" : "#FF5252" }}>
+      {investorScoreData.breakdown.alpha?.value > 0 ? "+" : ""}{investorScoreData.breakdown.alpha?.value?.toFixed(2) || "N/A"}%
     </h3>
+    <p style={{ fontSize: "12px", color: "#666", margin: "0" }}>
+      {investorScoreData.breakdown.alpha?.description}
+    </p>
+    <p style={{ fontSize: "11px", color: "#555", marginTop: "8px" }}>
+      Score: {investorScoreData.breakdown.alpha?.score.toFixed(2)}/{investorScoreData.breakdown.alpha?.maxPoints}
+    </p>
   </div>
 
+  {/* Consistency - 10% */}
   <div
     style={{
       background: "#111827",
       padding: "20px",
       borderRadius: "12px",
-      minWidth: "200px",
+      minWidth: "220px",
       border: "1px solid #333"
     }}
   >
-    <p style={{ color: "#888", marginBottom: "10px" }}>Volatility</p>
-    <h3 style={{ margin: 0, color: investorScoreData.breakdown.volatility <= 5 ? "#00C853" : investorScoreData.breakdown.volatility <= 10 ? "#FFC107" : "#FF5252" }}>
-      {investorScoreData.breakdown.volatility.toFixed(2)}%
+    <p style={{ color: "#888", marginBottom: "8px", fontSize: "12px" }}>Consistency (10%)</p>
+    <h3 style={{ margin: "0 0 8px 0", color: investorScoreData.breakdown.consistency?.value >= 60 ? "#00C853" : investorScoreData.breakdown.consistency?.value >= 50 ? "#FFC107" : "#FF5252" }}>
+      {investorScoreData.breakdown.consistency?.value?.toFixed(1) || "N/A"}%
     </h3>
-    <p style={{ fontSize: "12px", color: "#666", margin: "5px 0 0 0" }}>Lower is Better</p>
+    <p style={{ fontSize: "12px", color: "#666", margin: "0" }}>
+      {investorScoreData.breakdown.consistency?.description}
+    </p>
+    <p style={{ fontSize: "11px", color: "#555", marginTop: "8px" }}>
+      Score: {investorScoreData.breakdown.consistency?.score.toFixed(2)}/{investorScoreData.breakdown.consistency?.maxPoints}
+    </p>
   </div>
 
+  {/* Expense Ratio - 10% */}
   <div
     style={{
       background: "#111827",
       padding: "20px",
       borderRadius: "12px",
-      minWidth: "200px",
+      minWidth: "220px",
       border: "1px solid #333"
     }}
   >
-    <p style={{ color: "#888", marginBottom: "10px" }}>Consistency</p>
-    <h3 style={{ margin: 0, color: investorScoreData.breakdown.consistency >= 60 ? "#00C853" : investorScoreData.breakdown.consistency >= 50 ? "#FFC107" : "#FF5252" }}>
-      {investorScoreData.breakdown.consistency.toFixed(1)}%
+    <p style={{ color: "#888", marginBottom: "8px", fontSize: "12px" }}>Expense Ratio (10%)</p>
+    <h3 style={{ margin: "0 0 8px 0", color: investorScoreData.breakdown.expenseRatio?.value <= 0.5 ? "#00C853" : investorScoreData.breakdown.expenseRatio?.value <= 1 ? "#FFC107" : "#FF5252" }}>
+      {investorScoreData.breakdown.expenseRatio?.value?.toFixed(2) || "N/A"}%
     </h3>
-    <p style={{ fontSize: "12px", color: "#666", margin: "5px 0 0 0" }}>% Positive Days</p>
+    <p style={{ fontSize: "12px", color: "#666", margin: "0" }}>
+      {investorScoreData.breakdown.expenseRatio?.description}
+    </p>
+    <p style={{ fontSize: "11px", color: "#555", marginTop: "8px" }}>
+      Score: {investorScoreData.breakdown.expenseRatio?.score.toFixed(2)}/{investorScoreData.breakdown.expenseRatio?.maxPoints}
+    </p>
+  </div>
+
+  {/* Max Drawdown - 5% */}
+  <div
+    style={{
+      background: "#111827",
+      padding: "20px",
+      borderRadius: "12px",
+      minWidth: "220px",
+      border: "1px solid #333"
+    }}
+  >
+    <p style={{ color: "#888", marginBottom: "8px", fontSize: "12px" }}>Max Drawdown (5%)</p>
+    <h3 style={{ margin: "0 0 8px 0", color: investorScoreData.breakdown.maxDrawdown?.value <= 15 ? "#00C853" : investorScoreData.breakdown.maxDrawdown?.value <= 30 ? "#FFC107" : "#FF5252" }}>
+      {investorScoreData.breakdown.maxDrawdown?.value?.toFixed(2) || "N/A"}%
+    </h3>
+    <p style={{ fontSize: "12px", color: "#666", margin: "0" }}>
+      {investorScoreData.breakdown.maxDrawdown?.description} (lower is better)
+    </p>
+    <p style={{ fontSize: "11px", color: "#555", marginTop: "8px" }}>
+      Score: {investorScoreData.breakdown.maxDrawdown?.score.toFixed(2)}/{investorScoreData.breakdown.maxDrawdown?.maxPoints}
+    </p>
+  </div>
+
+  {/* Benchmark Performance - 5% */}
+  <div
+    style={{
+      background: "#111827",
+      padding: "20px",
+      borderRadius: "12px",
+      minWidth: "220px",
+      border: "1px solid #333"
+    }}
+  >
+    <p style={{ color: "#888", marginBottom: "8px", fontSize: "12px" }}>Benchmark Perf. (5%)</p>
+    <h3 style={{ margin: "0 0 8px 0", color: investorScoreData.breakdown.benchmarkPerformance?.value >= 0 ? "#00C853" : "#FF5252" }}>
+      {investorScoreData.breakdown.benchmarkPerformance?.value > 0 ? "+" : ""}{investorScoreData.breakdown.benchmarkPerformance?.value?.toFixed(2) || "N/A"}%
+    </h3>
+    <p style={{ fontSize: "12px", color: "#666", margin: "0" }}>
+      {investorScoreData.breakdown.benchmarkPerformance?.description}
+    </p>
+    <p style={{ fontSize: "11px", color: "#555", marginTop: "8px" }}>
+      Score: {investorScoreData.breakdown.benchmarkPerformance?.score.toFixed(2)}/{investorScoreData.breakdown.benchmarkPerformance?.maxPoints}
+    </p>
   </div>
 </div>
 

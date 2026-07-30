@@ -1,5 +1,5 @@
 import NAVChart from "./NAVChart";
-import { getScoreColor, getScoreRating } from "../utils/calculateInvestorScore";
+import { getScoreColorV2, getScoreRatingV2 } from "../utils/calculateInvestorScoreV2";
 import { useState } from "react";
 
 function FundCard(props) {
@@ -17,8 +17,8 @@ function FundCard(props) {
     return "green";
   }
 
-  const scoreColor = getScoreColor(props.fund.investorScore);
-  const scoreRating = getScoreRating(props.fund.investorScore);
+  const scoreColor = getScoreColorV2(props.fund.investorScore);
+  const scoreRating = getScoreRatingV2(props.fund.investorScore);
 
   return (
     <div
